@@ -1,5 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import axios from 'axios';
 import { useState } from 'react';
 
 import Box from '@mui/material/Box';
@@ -33,44 +31,38 @@ export default function LoginView() {
   const [userCredentials, setUserCredentials] = useState({ email: '', password: '' });
 
   const handleLogin = async (event) => {
-    console.log('Event:', event);
-    if (!event || !event.target || !event.target.elements) {
-      console.error('Event or event.target is undefined.');
-      return;
-    }
-
-    console.log('Event target:', event.target);
-
     event.preventDefault();
     const formData = new FormData(event.target);
-    console.log('Form Data:', formData);
+
+    const data = {
+      email: formData.get('email'),
+      password: formData.get('password'),
+    };
 
     try {
-      const response = await axios.post('https://canvas-back-end.onrender.com/main/admin/login', {
-        email: userCredentials.email,
-        password: userCredentials.password,
+      const response = await fetch('https://canvas-back-end.onrender.com/main/admin/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
       });
 
-      const { data } = response;
-      if (data.message === 'ok') {
-        // Successful login, handle the response accordingly
-        const { token, id } = data;
-        // Store the token in localStorage or a state management solution
+      const responseData = await response.json();
+
+      if (responseData.message === 'ok') {
+        const { token, id } = responseData;
         localStorage.setItem('token', token);
-        // Redirect to the appropriate dashboard based on the user's role or ID
         if (id === '12345678') {
           router.push('/ldashboard');
         } else {
           router.push('/udashboard');
         }
       } else {
-        // Handle invalid credentials
         alert('Invalid credentials');
       }
     } catch (error) {
-      // Handle errors
       console.error('An error occurred:', error);
-      // Display an error message to the user
       alert('An error occurred during login. Please try again.');
     }
   };

@@ -1,5 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import axios from 'axios';
 import React, { useState } from 'react';
 
 import Box from '@mui/material/Box';
@@ -27,14 +25,6 @@ const SignupView = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSignup = async (event) => {
-    console.log('Event:', event);
-    if (!event || !event.target || !event.target.elements) {
-      console.error('Event or event.target is undefined.');
-      return;
-    }
-
-    console.log('Event target:', event.target);
-
     event.preventDefault();
     const formData = new FormData();
     formData.append('name', event.target.elements.name.value);
@@ -42,26 +32,18 @@ const SignupView = () => {
     formData.append('password', event.target.elements.password.value);
     formData.append('mobile', event.target.elements.mobile.value);
     formData.append('oid', event.target.elements.oid.value);
-    // Log the form data
-    console.log('Form Data:', formData);
-    // eslint-disable-next-line no-restricted-syntax
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
-    }
 
     try {
-      const response = await axios.post(
-        'https://canvas-back-end.onrender.com/main/admin/signup',
-        formData
-      );
+      const response = await fetch('https://canvas-back-end.onrender.com/main/admin/signup', {
+        method: 'POST',
+        body: formData,
+      });
 
-      // Handle the response here
-      console.log('Response:', response.data);
+      const responseData = await response.json();
+      console.log('Response:', responseData);
 
-      // Redirect to the home page after successful registration
-      router.push('/');
+      router.push('/'); // Redirect to the home page after successful registration
     } catch (error) {
-      // Handle errors here
       console.error('An error occurred:', error);
     }
   };
