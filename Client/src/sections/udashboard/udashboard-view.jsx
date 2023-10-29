@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved */
 import React, { useState } from 'react';
 
 import {
@@ -17,9 +16,9 @@ import {
 // eslint-disable-next-line import/no-unresolved
 import { useRouter } from 'src/routes/hooks';
 
+// eslint-disable-next-line import/no-unresolved
 import Logo from 'src/components/logo';
 
-// eslint-disable-next-line import/no-unresolved
 import UserMapView from './userMap';
 
 export default function KaryaDashboard() {
@@ -45,7 +44,6 @@ export default function KaryaDashboard() {
   };
 
   const handleVoterFormSubmit = () => {
-    // Handle logic for submitting voter form
     console.log('Voter form submitted');
   };
 
@@ -74,6 +72,19 @@ export default function KaryaDashboard() {
             <Typography variant="subtitle2" sx={{ color: '#fff' }}>
               useremail@example.com
             </Typography>
+            <Button
+              variant="contained"
+              onClick={() => {
+                // Handle logout here
+                // For example, you can clear the session and redirect to the login page
+                localStorage.clear(); // Clear the user session
+                // eslint-disable-next-line no-restricted-globals
+                router.push('/'); // Redirect to the login page
+              }}
+              sx={{ backgroundColor: '#f44336', color: 'white' }}
+            >
+              Logout
+            </Button>
           </Box>
         </Toolbar>
       </AppBar>
@@ -154,7 +165,6 @@ export default function KaryaDashboard() {
           </Grid>
         </Grid>
       </Box>
-
       <Box mt={3} p={2} bgcolor="grey.200">
         <UserMapView />
       </Box>

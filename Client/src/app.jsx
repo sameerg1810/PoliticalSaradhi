@@ -1,6 +1,7 @@
 /* eslint-disable perfectionist/sort-imports */
 // eslint-disable-next-line import/no-unresolved
 import 'src/global.css';
+// eslint-disable-next-line no-undef
 
 // eslint-disable-next-line import/no-unresolved
 import { useScrollToTop } from 'src/hooks/use-scroll-to-top';

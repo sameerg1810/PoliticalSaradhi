@@ -5,6 +5,7 @@ import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
+import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -21,28 +22,43 @@ import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
 
 const SignupView = () => {
+  const theme = useTheme();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    mobile: '',
+    oid: '',
+  });
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
   const handleSignup = async (event) => {
     event.preventDefault();
-    const formData = new FormData();
-    formData.append('name', event.target.elements.name.value);
-    formData.append('email', event.target.elements.email.value);
-    formData.append('password', event.target.elements.password.value);
-    formData.append('mobile', event.target.elements.mobile.value);
-    formData.append('oid', event.target.elements.oid.value);
+    const { name, email, password, mobile, oid } = formData;
 
     try {
       const response = await fetch('https://canvas-back-end.onrender.com/main/admin/signup', {
         method: 'POST',
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, password, mobile, oid }),
       });
 
       const responseData = await response.json();
       console.log('Response:', responseData);
 
-      router.push('/'); // Redirect to the home page after successful registration
+      if (response.ok) {
+        router.push('/'); // Redirect to the home page after successful registration
+      } else {
+        console.error('Sign up failed:', responseData.message);
+      }
     } catch (error) {
       console.error('An error occurred:', error);
     }
@@ -59,7 +75,7 @@ const SignupView = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'background.default',
+        backgroundColor: theme.palette.background.default,
       }}
     >
       <Box>
@@ -83,8 +99,8 @@ const SignupView = () => {
 
             <Typography variant="body2" sx={{ mt: 2, mb: 5 }}>
               Already have an account?
-              <RouterLink component={RouterLink} to="/login" variant="subtitle2" sx={{ ml: 0.5 }}>
-                Get started
+              <RouterLink to="/" variant="subtitle2" sx={{ ml: 0.5 }}>
+                Login
               </RouterLink>
             </Typography>
             <Divider sx={{ my: 3 }}>
@@ -95,8 +111,8 @@ const SignupView = () => {
 
             <form onSubmit={handleSignup}>
               <Stack spacing={3}>
-                <TextField name="name" label="Name" />
-                <TextField name="email" label="Email address" />
+                <TextField name="name" label="Name" onChange={handleInputChange} />
+                <TextField name="email" label="Email address" onChange={handleInputChange} />
                 <TextField
                   name="password"
                   label="Password"
@@ -110,15 +126,21 @@ const SignupView = () => {
                       </InputAdornment>
                     ),
                   }}
+                  onChange={handleInputChange}
                 />
-                <TextField name="mobile" label="Mobile" inputProps={{ inputMode: 'numeric' }} />
-                <TextField name="oid" label="OID" />
+                <TextField
+                  name="mobile"
+                  label="Mobile"
+                  inputProps={{ inputMode: 'numeric' }}
+                  onChange={handleInputChange}
+                />
+                <TextField name="oid" label="OID" onChange={handleInputChange} />
               </Stack>
 
               <LoadingButton
                 fullWidth
                 size="large"
-                type="submit" // Make sure type is set to submit
+                type="submit"
                 variant="contained"
                 color="inherit"
               >

@@ -32,6 +32,14 @@
     const global = globalThis;
   </script>
   <script type="module" src="/src/main.jsx"></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(function (OneSignal) {
+      OneSignal.init({
+        appId: "3064d4d1-a4b3-4a1e-990b-2320aca859cd",
+      });
+    });
+  </script>
 </body>
 
 </html>
