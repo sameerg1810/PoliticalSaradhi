@@ -75,7 +75,7 @@ const SignupView = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: theme.palette.background.default,
+        backgroundImage: `url('/assets/background/overlay_4.jpg')`,
       }}
     >
       <Box>
