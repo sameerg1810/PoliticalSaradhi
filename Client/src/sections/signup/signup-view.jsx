@@ -44,7 +44,7 @@ const SignupView = () => {
     const { name, email, password, mobile, oid } = formData;
 
     try {
-      const response = await fetch('https://canvas-back-end.onrender.com/main/admin/signup', {
+      const response = await fetch('https://canvas-back-end.onrender.com/main/user/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
