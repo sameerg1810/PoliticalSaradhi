@@ -5,15 +5,12 @@ import React, { useState, useEffect } from 'react';
 import { Grid, Button } from '@mui/material';
 
 const UserMapView = () => {
-  const mapboxAccessToken =
-    'pk.eyJ1IjoiYWhtZWRzaGFpazk5OSIsImEiOiJjbG81ZHRvY3UwOXo4MmttdjlzOHptZnk4In0.7pFLKtTFUz8RP6VHmd8EKw';
+  const mapboxAccessToken = 'pk.eyJ1IjoiYWhtZWRzaGFpazk5OSIsImEiOiJjbG81ZHRvY3UwOXo4MmttdjlzOHptZnk4In0.7pFLKtTFUz8RP6VHmd8EKw'; // Replace with your Mapbox access token
 
   const [map, setMap] = useState(null);
   const [watchId, setWatchId] = useState(null);
   const [tracking, setTracking] = useState(false);
   const [pathCoordinates, setPathCoordinates] = useState([]);
-  const [startMarker, setStartMarker] = useState(null);
-  const [endMarker, setEndMarker] = useState(null);
 
   const calculateDistance = (coord1, coord2) => {
     const [lat1, lon1] = coord1;
@@ -24,9 +21,9 @@ const UserMapView = () => {
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(lat1 * (Math.PI / 180)) *
-        Math.cos(lat2 * (Math.PI / 180)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
+      Math.cos(lat2 * (Math.PI / 180)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c * 1000; // Distance in meters
   };
@@ -35,19 +32,37 @@ const UserMapView = () => {
     const { latitude, longitude } = position.coords;
     console.log('Latitude:', latitude);
     console.log('Longitude:', longitude);
-    map.setCenter([longitude, latitude]);
+
+    if (map) {
+      map.setCenter([longitude, latitude]);
+    }
 
     const updatedCoordinates = [...pathCoordinates, [longitude, latitude]];
     console.log('Updated Coordinates:', updatedCoordinates);
     setPathCoordinates(updatedCoordinates);
-    map.getSource('path').setData({
-      type: 'Feature',
-      properties: {},
-      geometry: {
-        type: 'LineString',
-        coordinates: updatedCoordinates,
-      },
-    });
+
+    if (map) {
+      map.getSource('path').setData({
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'LineString',
+          coordinates: updatedCoordinates,
+        },
+      });
+    }
+
+    // Create a custom live location icon using HTML string
+    const liveLocationIcon = document.createElement('div');
+    liveLocationIcon.innerHTML = '<i class="fa-solid fa-compass"></i>'; // Your custom HTML icon
+    liveLocationIcon.style.fontSize = '24px'; // Set the size as needed
+    liveLocationIcon.style.color = 'blue'; // Set the color as needed
+
+    if (map) {
+      new mapboxgl.Marker(liveLocationIcon)
+        .setLngLat([longitude, latitude])
+        .addTo(map);
+    }
   };
 
   const calculateTotalDistance = (coordinates) => {
@@ -59,47 +74,25 @@ const UserMapView = () => {
     return totalDistance.toFixed(2);
   };
 
-  const createStartMarker = () => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      const { latitude, longitude } = position.coords;
-      console.log('Start Latitude:', latitude);
-      console.log('Start Longitude:', longitude);
-      const marker = new mapboxgl.Marker({ color: 'green' })
-        .setLngLat([longitude, latitude])
-        .addTo(map);
-      setStartMarker(marker);
-    });
-  };
-
-  const createEndMarker = () => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      const { latitude, longitude } = position.coords;
-      console.log('End Latitude:', latitude);
-      console.log('End Longitude:', longitude);
-      const marker = new mapboxgl.Marker({ color: 'red' })
-        .setLngLat([longitude, latitude])
-        .addTo(map);
-      setEndMarker(marker);
-    });
-  };
-
-  const postCoordinates = async (startLocation, endLocation, date) => {
+  const postCoordinates = async (startLocation, endLocation, Date_Co) => {
     try {
-      // eslint-disable-next-line no-undef
-      const response = await fetch(`/api/users/${userId}/coordinates`, {
+      const data = {
+        startLocation,
+        endLocation,
+        date: Date_Co.toISOString(),
+      };
+
+      const response = await fetch(`https://canvas-back-end.onrender.com/main/user/cords/${localStorage.getItem('id')}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          startLocation,
-          endLocation,
-          date,
-        }),
+        body: JSON.stringify(data),
       });
+      console.log('this is my check', startLocation, endLocation);
 
-      const data = await response.json();
-      console.log('Response from Backend:', data);
+      const responseData = await response.json();
+      console.log('Response from Backend:', responseData);
     } catch (error) {
       console.error('Error posting coordinates:', error);
     }
@@ -108,7 +101,6 @@ const UserMapView = () => {
   const startTracking = () => {
     if (!tracking) {
       setTracking(true);
-      createStartMarker();
       setWatchId(navigator.geolocation.watchPosition(updateLocation));
     }
   };
@@ -117,7 +109,6 @@ const UserMapView = () => {
     if (tracking) {
       setTracking(false);
       navigator.geolocation.clearWatch(watchId);
-      createEndMarker();
       const distance = calculateTotalDistance(pathCoordinates);
       const startLocation = pathCoordinates[0];
       const endLocation = pathCoordinates[pathCoordinates.length - 1];
@@ -127,14 +118,8 @@ const UserMapView = () => {
 
       // Post coordinates to the backend
       if (pathCoordinates.length > 1) {
-        const startDate = new Date();
-        const endDate = new Date();
-        // eslint-disable-next-line no-shadow
-        const startLocation = pathCoordinates[0];
-        // eslint-disable-next-line no-shadow
-        const endLocation = pathCoordinates[pathCoordinates.length - 1];
-        const date = startDate.toISOString().slice(0, 10);
-        await postCoordinates(startLocation, endLocation, date);
+        const Date_Co = new Date();
+        await postCoordinates(startLocation, endLocation, Date_Co);
       }
     }
   };
@@ -158,20 +143,6 @@ const UserMapView = () => {
             type: 'LineString',
             coordinates: [],
           },
-        },
-      });
-
-      mapInstance.addLayer({
-        id: 'path',
-        type: 'line',
-        source: 'path',
-        layout: {
-          'line-join': 'round',
-          'line-cap': 'round',
-        },
-        paint: {
-          'line-color': 'orange',
-          'line-width': 8,
         },
       });
 

@@ -49,7 +49,8 @@ export default function LoginView() {
       if (responseData.message === 'ok') {
         const { token, id ,msg} = responseData;
         localStorage.setItem('token', token);
-        const nextPage = responseData.msg === 'user' ? '/udashboard' : '/ldashboard';
+        localStorage.setItem('id',id)
+        const nextPage = msg === 'user' ? '/udashboard' : '/ldashboard';
         router.push(nextPage);
       } else {
         alert('Invalid credentials');
