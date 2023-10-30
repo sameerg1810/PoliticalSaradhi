@@ -12,9 +12,7 @@ const UserMapView = () => {
   const [watchId, setWatchId] = useState(null);
   const [tracking, setTracking] = useState(false);
   const [pathCoordinates, setPathCoordinates] = useState([]);
-  // eslint-disable-next-line no-unused-vars
   const [startMarker, setStartMarker] = useState(null);
-  // eslint-disable-next-line no-unused-vars
   const [endMarker, setEndMarker] = useState(null);
 
   const calculateDistance = (coord1, coord2) => {
@@ -35,9 +33,12 @@ const UserMapView = () => {
 
   const updateLocation = (position) => {
     const { latitude, longitude } = position.coords;
+    console.log('Latitude:', latitude);
+    console.log('Longitude:', longitude);
     map.setCenter([longitude, latitude]);
 
     const updatedCoordinates = [...pathCoordinates, [longitude, latitude]];
+    console.log('Updated Coordinates:', updatedCoordinates);
     setPathCoordinates(updatedCoordinates);
     map.getSource('path').setData({
       type: 'Feature',
@@ -54,12 +55,15 @@ const UserMapView = () => {
     for (let i = 0; i < coordinates.length - 1; i += 1) {
       totalDistance += calculateDistance(coordinates[i], coordinates[i + 1]);
     }
+    console.log('Total Distance:', totalDistance.toFixed(2));
     return totalDistance.toFixed(2);
   };
 
   const createStartMarker = () => {
     navigator.geolocation.getCurrentPosition((position) => {
       const { latitude, longitude } = position.coords;
+      console.log('Start Latitude:', latitude);
+      console.log('Start Longitude:', longitude);
       const marker = new mapboxgl.Marker({ color: 'green' })
         .setLngLat([longitude, latitude])
         .addTo(map);
@@ -70,11 +74,35 @@ const UserMapView = () => {
   const createEndMarker = () => {
     navigator.geolocation.getCurrentPosition((position) => {
       const { latitude, longitude } = position.coords;
+      console.log('End Latitude:', latitude);
+      console.log('End Longitude:', longitude);
       const marker = new mapboxgl.Marker({ color: 'red' })
         .setLngLat([longitude, latitude])
         .addTo(map);
       setEndMarker(marker);
     });
+  };
+
+  const postCoordinates = async (startLocation, endLocation, date) => {
+    try {
+      // eslint-disable-next-line no-undef
+      const response = await fetch(`/api/users/${userId}/coordinates`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          startLocation,
+          endLocation,
+          date,
+        }),
+      });
+
+      const data = await response.json();
+      console.log('Response from Backend:', data);
+    } catch (error) {
+      console.error('Error posting coordinates:', error);
+    }
   };
 
   const startTracking = () => {
@@ -91,8 +119,23 @@ const UserMapView = () => {
       navigator.geolocation.clearWatch(watchId);
       createEndMarker();
       const distance = calculateTotalDistance(pathCoordinates);
-      console.log(`start:${pathCoordinates[0]},end:${pathCoordinates[pathCoordinates.length - 1]}`);
-      alert(`Traveled distance: ${distance} meters`);
+      const startLocation = pathCoordinates[0];
+      const endLocation = pathCoordinates[pathCoordinates.length - 1];
+
+      const alertMessage = `Traveled distance: ${distance} meters\nStart Location: ${startLocation}\nEnd Location: ${endLocation}`;
+      alert(alertMessage);
+
+      // Post coordinates to the backend
+      if (pathCoordinates.length > 1) {
+        const startDate = new Date();
+        const endDate = new Date();
+        // eslint-disable-next-line no-shadow
+        const startLocation = pathCoordinates[0];
+        // eslint-disable-next-line no-shadow
+        const endLocation = pathCoordinates[pathCoordinates.length - 1];
+        const date = startDate.toISOString().slice(0, 10);
+        await postCoordinates(startLocation, endLocation, date);
+      }
     }
   };
 

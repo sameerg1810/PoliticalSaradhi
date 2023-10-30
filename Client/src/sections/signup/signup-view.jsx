@@ -22,6 +22,7 @@ import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
 
 const SignupView = () => {
+  // eslint-disable-next-line no-unused-vars
   const theme = useTheme();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
