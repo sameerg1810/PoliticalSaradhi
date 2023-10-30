@@ -21,58 +21,67 @@ import Logo from 'src/components/logo';
 // eslint-disable-next-line import/no-unresolved
 import Iconify from 'src/components/iconify';
 
-export default function LoginView() {
+const AdminSignUp = () => {
   // eslint-disable-next-line no-unused-vars
   const theme = useTheme();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [userCredentials, setUserCredentials] = useState({ email: '', password: '' });
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    mobile: '',
+    // oid: '',
+  });
 
-  const handleLogin = async (event) => {
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSignup = async (event) => {
     event.preventDefault();
-    const { email, password } = userCredentials;
-    try {
-   
+    const { name, email, password, mobile } = formData;
 
-      const response = await fetch('https://canvas-back-end.onrender.com/main/admin/login', {
+    try {
+      const response = await fetch('https://canvas-back-end.onrender.com/main/admin/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ name, email, password, mobile}),
       });
-      console.log('hello')
-   
       const responseData = await response.json();
-      console.log(responseData)
-   
-      if (responseData.message === 'ok') {
-        const { token, id ,msg} = responseData;
-        localStorage.setItem('token', token);
-        const nextPage = responseData.msg === 'user' ? '/udashboard' : '/ldashboard';
-        router.push(nextPage);
+      console.log('Response:', responseData);
+      if (response.ok) {
+        router.push('/'); // Redirect to the home page after successful registration
       } else {
-        alert('Invalid credentials');
+        console.error('Sign up failed:', responseData.message);
       }
-    } catch (error) {
+    } catch (error){
       console.error('An error occurred:', error);
-      alert('An error occurred during login. Please try again.');
     }
   };
 
   return (
     <Box
       sx={{
-        backgroundImage: `url('/assets/background/overlay_4.jpg')`,
-        backgroundPosition: 'center',
-        backgroundSize: 'cover',
-        height: '100vh',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
         display: 'flex',
-        justifyContent: 'center',
         alignItems: 'center',
+        justifyContent: 'center',
+        backgroundImage: `url('/assets/background/overlay_4.jpg')`,
       }}
     >
-      <Box>
+      <Box 
+      sx={{
+        width:500
+      }}
+      >
         <Logo
           sx={{
             position: 'fixed',
@@ -81,42 +90,36 @@ export default function LoginView() {
           }}
         />
 
-        <Stack alignItems="center" justifyContent="center">
-          <Card sx={{ p: 5, width: 1, maxWidth: 420 }}>
-            <Typography variant="h4">Sign in to Political Saradhi</Typography>
+        <Stack alignItems="center" justifyContent="center" sx={{ height: 1 }}>
+          <Card
+            sx={{
+              p: 5,
+              width: 1,
+              maxWidth: 520,
+            }}
+          >
+            <Typography variant="h4">Create an  Admin account</Typography>
 
             <Typography variant="body2" sx={{ mt: 2, mb: 5 }}>
-              Don’t have an account?{' '}
-              <RouterLink to="/signup" variant="subtitle2" sx={{ ml: 0.5 }}>
-                Get started
+              Already have an account?
+              <RouterLink to="/" variant="subtitle2" sx={{ ml: 0.5 }}>
+                Login
               </RouterLink>
             </Typography>
-
             <Divider sx={{ my: 3 }}>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                 OR
               </Typography>
             </Divider>
 
-            <form onSubmit={handleLogin}>
+            <form onSubmit={handleSignup}>
               <Stack spacing={3}>
-                <TextField
-                  name="email"
-                  label="Email address"
-                  value={userCredentials.email}
-                  onChange={(e) =>
-                    setUserCredentials({ ...userCredentials, email: e.target.value })
-                  }
-                />
-
+                <TextField name="name" label="Name" onChange={handleInputChange} />
+                <TextField name="email" label="Email address" onChange={handleInputChange} />
                 <TextField
                   name="password"
                   label="Password"
                   type={showPassword ? 'text' : 'password'}
-                  value={userCredentials.password}
-                  onChange={(e) =>
-                    setUserCredentials({ ...userCredentials, password: e.target.value })
-                  }
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -126,13 +129,15 @@ export default function LoginView() {
                       </InputAdornment>
                     ),
                   }}
+                  onChange={handleInputChange}
                 />
-              </Stack>
-
-              <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ my: 3 }}>
-                <RouterLink to="/forgot-password" variant="subtitle2" underline="hover">
-                  Forgot password?
-                </RouterLink>
+                <TextField
+                  name="mobile"
+                  label="Mobile"
+                  inputProps={{ inputMode: 'numeric' }}
+                  onChange={handleInputChange}
+                />
+                {/* <TextField name="oid" label="OID" onChange={handleInputChange} /> */}
               </Stack>
 
               <LoadingButton
@@ -141,8 +146,11 @@ export default function LoginView() {
                 type="submit"
                 variant="contained"
                 color="inherit"
+                  sx={{
+                    marginTop:10
+                  }}
               >
-                Login
+                Sign Up
               </LoadingButton>
             </form>
           </Card>
@@ -150,4 +158,6 @@ export default function LoginView() {
       </Box>
     </Box>
   );
-}
+};
+
+export default AdminSignUp;

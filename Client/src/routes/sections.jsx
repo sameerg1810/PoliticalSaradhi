@@ -5,6 +5,9 @@ import { Outlet, Navigate, useRoutes } from 'react-router-dom';
 import DashboardLayout from 'src/layouts/dashboard';
 
 // eslint-disable-next-line import/no-unresolved
+import AdminSignUp from 'src/sections/signup/Admin_sign_Up';
+
+// eslint-disable-next-line import/no-unresolved
 export const IndexPage = lazy(() => import('src/pages/app'));
 
 // eslint-disable-next-line import/no-unresolved
@@ -57,6 +60,10 @@ export default function Router() {
       path: '*',
       element: <Navigate to="/404" replace />,
     },
+    {
+      path:'admin',
+      element:<AdminSignUp/> 
+    }
   ]);
 
   return routes;
