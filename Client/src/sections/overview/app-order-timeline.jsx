@@ -16,24 +16,26 @@ import { fDateTime } from 'src/utils/format-time';
 
 export default function AnalyticsOrderTimeline({ title, subheader, list, ...other }) {
   return (
-    <Card {...other}>
-      <CardHeader title={title} subheader={subheader} />
+    <div style={{ width: 400, height: 500, overflow: 'auto' }}>
+      <Card {...other}>
+        <CardHeader title={title} subheader={subheader} />
 
-      <Timeline
-        sx={{
-          m: 0,
-          p: 3,
-          [`& .${timelineItemClasses.root}:before`]: {
-            flex: 0,
-            padding: 0,
-          },
-        }}
-      >
-        {list.map((item, index) => (
-          <OrderItem key={item.id} item={item} lastTimeline={index === list.length - 1} />
-        ))}
-      </Timeline>
-    </Card>
+        <Timeline
+          sx={{
+            m: 0,
+            p: 2,
+            [`& .${timelineItemClasses.root}:before`]: {
+              flex: 0,
+              padding: 0,
+            },
+          }}
+        >
+          {list.map((item, index) => (
+            <OrderItem key={item.id} item={item} lastTimeline={index === list.length - 1} />
+          ))}
+        </Timeline>
+      </Card>
+    </div>
   );
 }
 

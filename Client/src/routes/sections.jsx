@@ -6,6 +6,12 @@ import DashboardLayout from 'src/layouts/dashboard';
 
 // eslint-disable-next-line import/no-unresolved
 import AdminSignUp from 'src/sections/signup/Admin_sign_Up';
+// eslint-disable-next-line perfectionist/sort-imports, import/no-unresolved
+import Reportvoter from 'src/sections/udashboard/reportVoter';
+// eslint-disable-next-line import/no-unresolved
+import Reportincident from 'src/sections/udashboard/Report-incident';
+// eslint-disable-next-line perfectionist/sort-imports, import/no-unresolved
+import VoterFormComponent from 'src/sections/udashboard/VoterFormComponent';
 
 // eslint-disable-next-line import/no-unresolved
 export const IndexPage = lazy(() => import('src/pages/app'));
@@ -23,6 +29,7 @@ export const Page404 = lazy(() => import('src/pages/page-not-found'));
 
 // eslint-disable-next-line import/no-unresolved
 export const Karyapage = lazy(() => import('src/pages/udashboard'));
+
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -61,9 +68,22 @@ export default function Router() {
       element: <Navigate to="/404" replace />,
     },
     {
-      path:'admin',
-      element:<AdminSignUp/> 
-    }
+      path: 'admin',
+      element: <AdminSignUp />,
+    },
+    {
+      path: 'Report-incident',
+      element: <Reportincident />,
+    },
+    {
+      path: 'reportVoter',
+      element: <Reportvoter />,
+    },
+
+    {
+      path: 'voterform',
+      element: <VoterFormComponent />,
+    },
   ]);
 
   return routes;

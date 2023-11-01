@@ -2,10 +2,11 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React, { useState, useEffect } from 'react';
 
-import { Grid, Button } from '@mui/material';
+import { Grid, Switch, FormControlLabel } from '@mui/material';
 
 const UserMapView = () => {
-  const mapboxAccessToken = 'pk.eyJ1IjoiYWhtZWRzaGFpazk5OSIsImEiOiJjbG81ZHRvY3UwOXo4MmttdjlzOHptZnk4In0.7pFLKtTFUz8RP6VHmd8EKw'; // Replace with your Mapbox access token
+  const mapboxAccessToken =
+    'pk.eyJ1IjoiYWhtZWRzaGFpazk5OSIsImEiOiJjbG81ZHRvY3UwOXo4MmttdjlzOHptZnk4In0.7pFLKtTFUz8RP6VHmd8EKw'; // Replace with your Mapbox access token
 
   const [map, setMap] = useState(null);
   const [watchId, setWatchId] = useState(null);
@@ -21,9 +22,9 @@ const UserMapView = () => {
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(lat1 * (Math.PI / 180)) *
-      Math.cos(lat2 * (Math.PI / 180)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
+        Math.cos(lat2 * (Math.PI / 180)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c * 1000; // Distance in meters
   };
@@ -59,9 +60,7 @@ const UserMapView = () => {
     liveLocationIcon.style.color = 'blue'; // Set the color as needed
 
     if (map) {
-      new mapboxgl.Marker(liveLocationIcon)
-        .setLngLat([longitude, latitude])
-        .addTo(map);
+      new mapboxgl.Marker(liveLocationIcon).setLngLat([longitude, latitude]).addTo(map);
     }
   };
 
@@ -82,13 +81,16 @@ const UserMapView = () => {
         date: Date_Co.toISOString(),
       };
 
-      const response = await fetch(`https://canvas-back-end.onrender.com/main/user/cords/${localStorage.getItem('id')}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `https://canvas-back-end.onrender.com/main/user/cords/${localStorage.getItem('id')}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        }
+      );
       console.log('this is my check', startLocation, endLocation);
 
       const responseData = await response.json();
@@ -98,29 +100,36 @@ const UserMapView = () => {
     }
   };
 
-  const startTracking = () => {
-    if (!tracking) {
-      setTracking(true);
-      setWatchId(navigator.geolocation.watchPosition(updateLocation));
+  const toggleTracking = () => {
+    if (tracking) {
+      stopTracking();
+    } else {
+      startTracking();
     }
   };
 
+  const startTracking = () => {
+    console.log('Starting tracking...');
+    // Call the   function to set showVoterForm to true
+    setTracking(true);
+    setWatchId(navigator.geolocation.watchPosition(updateLocation));
+  };
+
   const stopTracking = async () => {
-    if (tracking) {
-      setTracking(false);
-      navigator.geolocation.clearWatch(watchId);
-      const distance = calculateTotalDistance(pathCoordinates);
-      const startLocation = pathCoordinates[0];
-      const endLocation = pathCoordinates[pathCoordinates.length - 1];
+    console.log('Stopping tracking...');
+    setTracking(false);
+    navigator.geolocation.clearWatch(watchId);
+    const distance = calculateTotalDistance(pathCoordinates);
+    const startLocation = pathCoordinates[0];
+    const endLocation = pathCoordinates[pathCoordinates.length - 1];
 
-      const alertMessage = `Traveled distance: ${distance} meters\nStart Location: ${startLocation}\nEnd Location: ${endLocation}`;
-      alert(alertMessage);
+    const alertMessage = `Traveled distance: ${distance} meters\nStart Location: ${startLocation}\nEnd Location: ${endLocation}`;
+    alert(alertMessage);
 
-      // Post coordinates to the backend
-      if (pathCoordinates.length > 1) {
-        const Date_Co = new Date();
-        await postCoordinates(startLocation, endLocation, Date_Co);
-      }
+    // Post coordinates to the backend
+    if (pathCoordinates.length > 1) {
+      const Date_Co = new Date();
+      await postCoordinates(startLocation, endLocation, Date_Co);
     }
   };
 
@@ -151,6 +160,7 @@ const UserMapView = () => {
 
     return () => {
       if (mapInstance) {
+        console.log('Removing map instance...');
         mapInstance.remove();
       }
     };
@@ -160,33 +170,20 @@ const UserMapView = () => {
     <div>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <div id="map" style={{ position: 'relative', width: '100%', height: '400px' }} />
+          <div
+            id="map"
+            style={{ position: 'relative', width: '100%', height: '400px', display: 'none' }}
+          />
         </Grid>
         <Grid item xs={12}>
           <div
             id="controls"
             style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}
           >
-            <Button
-              variant="contained"
-              type="button"
-              id="startButton"
-              onClick={startTracking}
-              disabled={tracking}
-              style={{ margin: '0 10px' }}
-            >
-              {tracking ? 'Tracking...' : 'Start Tracking'}
-            </Button>
-            <Button
-              variant="contained"
-              type="button"
-              id="stopButton"
-              onClick={stopTracking}
-              disabled={!tracking}
-              style={{ margin: '0 10px' }}
-            >
-              Stop Tracking
-            </Button>
+            <FormControlLabel
+              control={<Switch onClick={toggleTracking} checked={tracking} color="primary" />}
+              label={tracking ? 'Await' : 'Awail'}
+            />
           </div>
         </Grid>
       </Grid>

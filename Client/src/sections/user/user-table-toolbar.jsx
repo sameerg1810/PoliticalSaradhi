@@ -47,9 +47,9 @@ export default function UserTableToolbar({ numSelected, filterName, onFilterName
       )}
 
       {numSelected > 0 ? (
-        <Tooltip title="Delete">
+        <Tooltip title="Download">
           <IconButton>
-            <Iconify icon="eva:trash-2-fill" />
+            <Iconify icon="eva:download-outline" />
           </IconButton>
         </Tooltip>
       ) : (

@@ -1,50 +1,61 @@
-import React, { useState } from 'react';
+/* eslint-disable import/no-unresolved */
+import { useState } from 'react';
+/* eslint-disable import/order */
+import { useNavigate } from 'react-router-dom';
 
 import {
   Box,
   Grid,
+  Menu,
   Card,
-  Modal,
-  Button,
   AppBar,
   Toolbar,
-  TextField,
+  MenuItem,
   Typography,
+  IconButton,
   CardContent,
 } from '@mui/material';
 
-// eslint-disable-next-line import/no-unresolved
+// eslint-disable-next-line perfectionist/sort-imports, import/order
 import { useRouter } from 'src/routes/hooks';
+
+import Bell from './buttons/bell.png';
+import NotificationPopup from './Notification';
+import Reportvoter from './buttons/report-voter.jpeg';
+import Reportincident from './buttons/incident-reporting.jpeg';
+// Replace with the correct path
+// eslint-disable-next-line import/no-unresolved
 
 // eslint-disable-next-line import/no-unresolved
 import Logo from 'src/components/logo';
 
+import Language from './Languages';
+// Replace with the correct path
+// eslint-disable-next-line import/no-unresolved
+
 import UserMapView from './userMap';
+import Profile from './buttons/Profile.png';
+import Canvassing from './buttons/Canvassing.png';
 
 export default function KaryaDashboard() {
-  // eslint-disable-next-line no-unused-vars
-  const router = useRouter();
-  const [open, setOpen] = useState(false);
-  const [showVoterDetailsForm, setShowVoterDetailsForm] = useState(false); // default hidden
-
-  const handleNotificationClick = () => {
-    setOpen(true);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [openPop, setOpenPop] = useState(false);
+  const open = Boolean(anchorEl);
+  const router = useRouter(); // state to control the visibility of VoterFormComponent
+  const navigate = useNavigate();
+  const handleOpenPopup = () => {
+    setOpenPop(true);
   };
 
   const handleClosePopup = () => {
-    setOpen(false);
+    setOpenPop(false);
+  };
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
   };
 
-  const handleUploadFile = (files) => {
-    console.log('Uploaded files:', files);
-  };
-
-  const handleToggleVoterDetailsForm = () => {
-    setShowVoterDetailsForm(!showVoterDetailsForm);
-  };
-
-  const handleVoterFormSubmit = () => {
-    console.log('Voter form submitted');
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -55,8 +66,8 @@ export default function KaryaDashboard() {
             style={{
               display: 'flex',
               alignItems: 'center',
-              height: '25%',
-              width: '50%',
+              height: '5%',
+              width: '25%',
               padding: '2px',
               margin: '1px',
               borderRadius: '50%',
@@ -65,109 +76,138 @@ export default function KaryaDashboard() {
             <Logo />
           </div>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ textAlign: 'right' }}>
-            <Typography variant="subtitle1" sx={{ color: '#fff' }}>
-              User Name
-            </Typography>
-            <Typography variant="subtitle2" sx={{ color: '#fff' }}>
-              useremail@example.com
-            </Typography>
-            <Button
-              variant="contained"
+          <IconButton
+            edge="end"
+            aria-label="profile"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleMenu}
+            color="inherit"
+          >
+            <img src={Profile} alt="Profile" />
+          </IconButton>
+          <Menu
+            id="menu-appbar"
+            anchorEl={anchorEl}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            open={open}
+            onClose={handleClose}
+            sx={{ minWidth: '150px' }} // Adjust the width as needed
+          >
+            <MenuItem onClick={handleClose} sx={{ minHeight: '30px' }}>
+              <Typography variant="subtitle1" sx={{ color: '#000' }}>
+                User Name
+              </Typography>
+            </MenuItem>
+            <MenuItem onClick={handleClose} sx={{ minHeight: '30px' }}>
+              <Typography variant="subtitle2" sx={{ color: '#000' }}>
+                useremail@example.com
+              </Typography>
+            </MenuItem>
+            <MenuItem
               onClick={() => {
-                // Handle logout here
-                // For example, you can clear the session and redirect to the login page
                 localStorage.clear(); // Clear the user session
-                // eslint-disable-next-line no-restricted-globals
-                router.push('/'); // Redirect to the login page
+                router.push('/');
               }}
-              sx={{ backgroundColor: '#f44336', color: 'white' }}
+              sx={{ minHeight: '30px' }}
             >
               Logout
-            </Button>
-          </Box>
+            </MenuItem>
+            <MenuItem sx={{ minHeight: '30px' }}>
+              <Language />
+            </MenuItem>
+          </Menu>
         </Toolbar>
       </AppBar>
-      <Box mt={3}>
-        <Typography variant="h4">Voter Details</Typography>
-      </Box>
 
-      <Box mt={3}>
-        <Modal open={open} onClose={handleClosePopup}>
-          <Box
-            sx={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: 300,
-              bgcolor: 'background.paper',
-              border: '2px solid #000',
-              boxShadow: 24,
-              p: 4,
-            }}
-          >
-            <Typography>Notification Popup Content</Typography>
-            <Button variant="contained" onClick={handleClosePopup}>
-              Close
-            </Button>
-          </Box>
-        </Modal>
-      </Box>
-
-      <Box mt={3}>
-        <input type="file" onChange={(e) => handleUploadFile(e.target.files)} />
-      </Box>
-
-      <Box mt={3}>
-        <Button
-          variant="contained"
-          onClick={handleToggleVoterDetailsForm}
-          sx={{ backgroundColor: '#4caf50', color: 'white' }}
-        >
-          {showVoterDetailsForm ? 'Hide Voter Details Form' : 'Show Voter Details Form'}
-        </Button>
-      </Box>
-
-      {showVoterDetailsForm && (
-        <Box mt={3}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6">Voter Form</Typography>
-              <TextField label="Name" variant="outlined" fullWidth margin="normal" />
-              <TextField label="Father's Name" variant="outlined" fullWidth margin="normal" />
-              <TextField label="Date of Birth" variant="outlined" fullWidth margin="normal" />
-              <TextField label="Gender" variant="outlined" fullWidth margin="normal" />
-              <TextField label="Booth Number" variant="outlined" fullWidth margin="normal" />
-              <Button
-                variant="contained"
-                onClick={handleVoterFormSubmit}
-                sx={{ backgroundColor: '#f9a825', color: 'white' }}
-              >
-                Submit
-              </Button>
-            </CardContent>
-          </Card>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Box mt={1} p={2} bgcolor="grey.200">
+          <UserMapView />
         </Box>
-      )}
-
-      <Box mt={3}>
-        <Grid container spacing={2} justifyContent="center">
-          <Grid item xs={12} md={6}>
-            <Box mt={2} display="flex" justifyContent="center">
-              <Button
-                sx={{ backgroundColor: '#f50057', color: 'white', borderRadius: '50px' }}
-                onClick={handleNotificationClick}
-              >
-                <Typography variant="button">Notifications</Typography>
-              </Button>
-            </Box>
+        <Box mt={1} p={2} bgcolor="grey.200">
+          <Box mt={3}>
+            <IconButton
+              onClick={handleOpenPopup}
+              color="inherit"
+              aria-label="notifications"
+              edge="end"
+            >
+              <img src={Bell} alt="Bell" />
+            </IconButton>
+          </Box>
+          <Box mt={1} p={2} bgcolor="grey.200">
+            <NotificationPopup open={openPop} handleClosePopup={handleClosePopup} />
+          </Box>
+        </Box>
+      </Box>
+      <Card variant="outlined" sx={{ mt: 3 }}>
+        <CardContent>
+          <Grid container spacing={2} justifyContent="center">
+            <Grid item xs={12} md={6}>
+              <Box mt={1} display="flex" justifyContent="center">
+                <button
+                  type="button"
+                  className="report-incident-button"
+                  onClick={() => {
+                    navigate('/voterform');
+                  }}
+                >
+                  <img src={Canvassing} alt="Canvassing" />
+                </button>
+              </Box>
+            </Grid>
           </Grid>
-        </Grid>
-      </Box>
-      <Box mt={3} p={2} bgcolor="grey.200">
-        <UserMapView />
-      </Box>
+          <Grid container spacing={2} justifyContent="center" sx={{ mt: 3 }}>
+            <Grid item xs={12} md={6}>
+              <Box mt={2} display="flex" justifyContent="center">
+                <button
+                  type="button"
+                  className="report-incident-button"
+                  onClick={() => {
+                    navigate('/Report-incident');
+                  }}
+                >
+                  <img src={Reportincident} alt="report-incident" />
+                </button>
+              </Box>
+            </Grid>
+          </Grid>
+          <Grid container spacing={2} justifyContent="center" sx={{ mt: 3 }}>
+            <Grid item xs={12} md={6}>
+              <Box mt={2} display="flex" justifyContent="center">
+                <button
+                  type="button"
+                  className="report-incident-button"
+                  onClick={() => {
+                    navigate('/reportVoter');
+                  }}
+                >
+                  <img src={Reportvoter} alt="report-incident" />
+                </button>
+              </Box>
+              <div
+                className="report-con"
+                style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}
+              >
+                <button type="button" style={{ margin: '0 10px' }}>
+                  Call
+                </button>
+                <button type="button" style={{ margin: '0 10px' }}>
+                  Message
+                </button>
+              </div>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
     </Box>
   );
 }

@@ -114,9 +114,22 @@ export default function UserPage() {
           onFilterName={handleFilterByName}
         />
 
-        <Scrollbar>
+        <Scrollbar
+          sx={{
+            width: '100%', // Adjust the width as needed
+            height: 400, // Adjust the height as needed
+            '&::-webkit-scrollbar': {
+              width: '12px', // Adjust the width of the scrollbar
+              height: '12px', // Adjust the height of the scrollbar
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: 'green', // Adjust the color of the scrollbar thumb
+              borderRadius: '10px', // Adjust the border radius of the scrollbar thumb
+            },
+          }}
+        >
           <TableContainer sx={{ overflow: 'unset' }}>
-            <Table sx={{ minWidth: 800 }}>
+            <Table sx={{ minWidth: 900 }}>
               <UserTableHead
                 order={order}
                 orderBy={orderBy}
@@ -127,10 +140,11 @@ export default function UserPage() {
                 headLabel={[
                   { id: 'name', label: 'Name' },
                   { id: 'phone', label: 'Phone' },
-                  { id: 'mandal', label: 'Mandal' },
+                  { id: 'booth', label: 'Booth' },
                   { id: 'isVerified', label: 'Verified', align: 'center' },
                   { id: 'status', label: 'Status' },
-                  { id: '' },
+                  { id: 'work', label: 'Work' },
+                  // Add the new column here
                 ]}
               />
               <TableBody>
@@ -140,11 +154,13 @@ export default function UserPage() {
                     <UserTableRow
                       key={row.id}
                       name={row.name}
-                      mandal={row.mandal}
+                      booth={row.booth}
                       status={row.status}
                       phone={row.phone}
                       avatarUrl={row.avatarUrl}
                       isVerified={row.isVerified}
+                      work={row.work}
+                      // Make sure the key matches the header ID
                       selected={selected.indexOf(row.name) !== -1}
                       handleClick={(event) => handleClick(event, row.name)}
                     />
