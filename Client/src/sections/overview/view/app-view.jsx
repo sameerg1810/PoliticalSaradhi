@@ -58,7 +58,7 @@ export default function AppView() {
 
         <Grid item xs={12} sm={6} md={3} lg={3}>
           <AppWidgetSummary
-            title="Total Voter Applications"
+            title="Total Voters Knocked"
             total={34}
             color="error"
             icon={<img alt="icon" src="/assets/icons/glass/Verifieduser.png" />}
