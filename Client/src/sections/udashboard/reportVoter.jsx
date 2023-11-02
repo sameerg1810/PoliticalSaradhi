@@ -86,6 +86,15 @@ export default function Reportvoter() {
         </Box>
         <Box mt={3}>
           <FormControl fullWidth>
+            <TextField
+              label="Comments.."
+              value={formData.contactDetails}
+              onChange={handleInputChange}
+            />
+          </FormControl>
+        </Box>
+        <Box mt={3}>
+          <FormControl fullWidth>
             <InputLabel id="issue-label">Select Issue</InputLabel>
             <Select
               labelId="issue-label"

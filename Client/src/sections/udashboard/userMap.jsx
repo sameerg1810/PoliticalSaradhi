@@ -124,7 +124,7 @@ const UserMapView = () => {
     const endLocation = pathCoordinates[pathCoordinates.length - 1];
 
     const alertMessage = `Traveled distance: ${distance} meters\nStart Location: ${startLocation}\nEnd Location: ${endLocation}`;
-    alert(alertMessage);
+    // alert(alertMessage);
 
     // Post coordinates to the backend
     if (pathCoordinates.length > 1) {
