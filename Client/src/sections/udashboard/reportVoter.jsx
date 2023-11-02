@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 
 import { Box, Button, Select, MenuItem, TextField, InputLabel, FormControl } from '@mui/material';
 
-// eslint-disable-next-line import/no-unresolved
-import closeIcon from './close.png';
 import '../styles/Report-incident.css';
+// eslint-disable-next-line import/no-unresolved
+import closeIcon from './buttons/Close-button.jpeg';
 
 export default function Reportvoter() {
   const navigate = useNavigate();
