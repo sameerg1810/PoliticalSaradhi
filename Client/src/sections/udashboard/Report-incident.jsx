@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// eslint-disable-next-line import/no-unresolved
-
 import { Box, Button, TextField, IconButton, Typography, TextareaAutosize } from '@mui/material';
 
 import '../styles/Report-incident.css';
@@ -26,18 +24,26 @@ export default function Reportincident() {
 
   return (
     <Box p={2}>
-      <IconButton
-        className="closebutton"
-        onClick={() => {
-          navigate('/udashboard');
-        }}
-      >
-        <img src={close} alt="close" />
-      </IconButton>
+      <Box display="flex" justifyContent="flex-end">
+        <IconButton
+          className="closebutton"
+          onClick={() => {
+            navigate('/udashboard');
+          }}
+        >
+          <img src={close} alt="close" />
+        </IconButton>
+      </Box>
+
+      <Box mt={2}>
+        <Typography variant="h5" gutterBottom>
+          Report Incident
+        </Typography>
+      </Box>
 
       <form onSubmit={handleSubmit}>
         <Box mt={2}>
-          <TextField label="Title" variant="outlined" fullWidth required />
+          <TextField label="Incident" variant="outlined" fullWidth required />
         </Box>
 
         <Box mt={2}>

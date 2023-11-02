@@ -121,19 +121,19 @@ export default function KaryaDashboard() {
             >
               Logout
             </MenuItem>
-            <MenuItem sx={{ minHeight: '30px' }}>
-              <Language />
-            </MenuItem>
           </Menu>
         </Toolbar>
       </AppBar>
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Box mt={1} p={2} bgcolor="grey.200">
+        <Box mt={1} p={2} bgcolor="grey.200" border={2} borderColor="success.main" borderRadius={5}>
           <UserMapView />
+          <Typography variant="body1" color="text.secondary" align="center">
+            Enable this option to make yourself available and keep you online.
+          </Typography>
         </Box>
-        <Box mt={1} p={2} bgcolor="grey.200">
-          <Box mt={3}>
+        <Box mt={1} p={1} bgcolor="grey.200">
+          <Box mt={1}>
             <IconButton
               onClick={handleOpenPopup}
               color="inherit"
@@ -143,12 +143,15 @@ export default function KaryaDashboard() {
               <img src={Bell} alt="Bell" />
             </IconButton>
           </Box>
-          <Box mt={1} p={2} bgcolor="grey.200">
+          <Box mt={1} sx={{ minHeight: '30px' }}>
+            <Language />
+          </Box>
+          <Box mt={1} p={1} bgcolor="grey.200">
             <NotificationPopup open={openPop} handleClosePopup={handleClosePopup} />
           </Box>
         </Box>
       </Box>
-      <Card variant="outlined" sx={{ mt: 3 }}>
+      <Card variant="outlined" sx={{ mt: 4 }}>
         <CardContent>
           <Grid container spacing={2} justifyContent="center">
             <Grid item xs={12} md={6}>
