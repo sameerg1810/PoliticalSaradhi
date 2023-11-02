@@ -14,7 +14,7 @@ export default function Reportvoter() {
     pointOfContact: '',
     numberOfVoters: '',
     contactDetails: '',
-    issue: 'Illegal Movement',
+    issue: '',
   });
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -45,7 +45,7 @@ export default function Reportvoter() {
           <img src={closeIcon} alt="close" />
         </Button>
       </Box>
-      <h1>Report an Issue</h1>
+      <h1>Report a Voter</h1>
       <form onSubmit={handleSubmit}>
         <Box mt={3}>
           <FormControl fullWidth>
