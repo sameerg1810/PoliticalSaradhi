@@ -16,17 +16,18 @@ const UserMapView = () => {
   const calculateDistance = (coord1, coord2) => {
     const [lat1, lon1] = coord1;
     const [lat2, lon2] = coord2;
-    const R = 6371; // Radius of the Earth in kilometers
-    const dLat = (lat2 - lat1) * (Math.PI / 180);
-    const dLon = (lon2 - lon1) * (Math.PI / 180);
+    const R = 6371e3; // Earth's radius in meters
+    const φ1 = lat1 * (Math.PI / 180);
+    const φ2 = lat2 * (Math.PI / 180);
+    const Δφ = (lat2 - lat1) * (Math.PI / 180);
+    const Δλ = (lon2 - lon1) * (Math.PI / 180);
+
     const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(lat1 * (Math.PI / 180)) *
-        Math.cos(lat2 * (Math.PI / 180)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
+      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+      Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c * 1000; // Distance in meters
+
+    return R * c; // Distance in meters
   };
 
   const updateLocation = (position) => {
@@ -99,7 +100,13 @@ const UserMapView = () => {
       console.error('Error posting coordinates:', error);
     }
   };
-
+  useEffect(() => {
+    // Check for the tracking state in localStorage
+    const storedTracking = localStorage.getItem('tracking');
+    if (storedTracking) {
+      setTracking(JSON.parse(storedTracking));
+    }
+  }, []);
   const toggleTracking = () => {
     if (tracking) {
       stopTracking();
@@ -110,37 +117,53 @@ const UserMapView = () => {
 
   const startTracking = () => {
     console.log('Starting tracking...');
-    // Call the   function to set showVoterForm to true
     setTracking(true);
+    localStorage.setItem('tracking', true); // Store the tracking state in localStorage
     setWatchId(navigator.geolocation.watchPosition(updateLocation));
   };
 
   const stopTracking = async () => {
     console.log('Stopping tracking...');
+    let startLocation = '0';
+    let endLocation = '0';
     setTracking(false);
+    localStorage.setItem('tracking', false); // Store the tracking state in localStorage
     navigator.geolocation.clearWatch(watchId);
     const distance = calculateTotalDistance(pathCoordinates);
-    const startLocation = pathCoordinates[0];
-    const endLocation = pathCoordinates[pathCoordinates.length - 1];
+    startLocation = pathCoordinates[0];
+    endLocation = pathCoordinates[pathCoordinates.length - 1];
 
     const alertMessage = `Traveled distance: ${distance} meters\nStart Location: ${startLocation}\nEnd Location: ${endLocation}`;
-    // alert(alertMessage);
+    console.log(alertMessage);
 
-    // Post coordinates to the backend
     if (pathCoordinates.length > 1) {
       const Date_Co = new Date();
+      console.log('Posting coordinates...');
       await postCoordinates(startLocation, endLocation, Date_Co);
     }
   };
 
   useEffect(() => {
-    mapboxgl.accessToken = mapboxAccessToken;
+    let mapInstance;
 
-    const mapInstance = new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/mapbox/streets-v12',
-      zoom: 14,
-    });
+    const storedMap = localStorage.getItem('mapInstance');
+    if (storedMap) {
+      const storedMapData = JSON.parse(storedMap);
+      mapboxgl.accessToken = mapboxAccessToken;
+      mapInstance = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v12',
+        zoom: storedMapData.zoom,
+        center: storedMapData.center,
+      });
+    } else {
+      mapboxgl.accessToken = mapboxAccessToken;
+      mapInstance = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v12',
+        zoom: 14,
+      });
+    }
 
     mapInstance.on('load', () => {
       mapInstance.addSource('path', {
@@ -154,16 +177,15 @@ const UserMapView = () => {
           },
         },
       });
-
       setMap(mapInstance);
+      localStorage.setItem(
+        'mapInstance',
+        JSON.stringify({
+          zoom: mapInstance.getZoom(),
+          center: mapInstance.getCenter(),
+        })
+      );
     });
-
-    return () => {
-      if (mapInstance) {
-        console.log('Removing map instance...');
-        mapInstance.remove();
-      }
-    };
   }, []);
 
   return (
@@ -182,7 +204,7 @@ const UserMapView = () => {
           >
             <FormControlLabel
               control={<Switch onClick={toggleTracking} checked={tracking} color="primary" />}
-              label={tracking ? 'Await' : 'Awail'}
+              label={tracking ? 'Available' : 'Not Available'}
             />
           </div>
         </Grid>

@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 /* eslint-disable import/order */
 import { useNavigate } from 'react-router-dom';
 
@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 
 // eslint-disable-next-line perfectionist/sort-imports, import/order
-import { useRouter } from 'src/routes/hooks';
+// import { useRouter } from 'src/routes/hooks';
 
 import Bell from './buttons/bell.png';
 import NotificationPopup from './Notification';
@@ -40,9 +40,34 @@ import Canvassing from './buttons/Canvassing.png';
 export default function KaryaDashboard() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [openPop, setOpenPop] = useState(false);
+  const [userName, setUserName] = useState('');
+
   const open = Boolean(anchorEl);
-  const router = useRouter(); // state to control the visibility of VoterFormComponent
+  // const router = useRouter(); // state to control the visibility of VoterFormComponent
   const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      const id = localStorage.getItem('id');
+      if (id) {
+        await fetch(`https://canvas-back-end.onrender.com/main/user/logout/${id}`, {
+          method: 'GET',
+        });
+      }
+      // Clear local storage, session storage, and cookies
+      localStorage.clear();
+      sessionStorage.clear();
+      document.cookie.split(';').forEach((c) => {
+        document.cookie = c
+          .replace(/^ +/, '')
+          .replace(/=.*/, `=;expires=${new Date().toUTCString()};path=/`);
+      });
+      // Prevent the user from navigating forward after logging out
+      navigate('/');
+    } catch (error) {
+      console.error('An error occurred during logout:', error);
+    }
+  };
+
   const handleOpenPopup = () => {
     setOpenPop(true);
   };
@@ -57,7 +82,12 @@ export default function KaryaDashboard() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  useEffect(() => {
+    // Fetch user name and email from local storage when the component mounts
+    const name = localStorage.getItem('name');
 
+    setUserName(name);
+  }, []);
   return (
     <Box p={1}>
       <AppBar position="static" sx={{ backgroundColor: '#212121', p: 1 }}>
@@ -104,27 +134,16 @@ export default function KaryaDashboard() {
           >
             <MenuItem onClick={handleClose} sx={{ minHeight: '30px' }}>
               <Typography variant="subtitle1" sx={{ color: '#000' }}>
-                User Name
+                {userName}
               </Typography>
             </MenuItem>
-            <MenuItem onClick={handleClose} sx={{ minHeight: '30px' }}>
-              <Typography variant="subtitle2" sx={{ color: '#000' }}>
-                useremail@example.com
-              </Typography>
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                localStorage.clear(); // Clear the user session
-                router.push('/');
-              }}
-              sx={{ minHeight: '30px' }}
-            >
+            <MenuItem onClick={handleLogout} sx={{ minHeight: '30px' }}>
               Logout
             </MenuItem>
           </Menu>
         </Toolbar>
       </AppBar>
-
+      {/* this is main interface with tracking options , reporting voter , reporting incident , and Submitting voter forms */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box mt={1} p={2} bgcolor="grey.200" border={2} borderColor="success.main" borderRadius={5}>
           <UserMapView />

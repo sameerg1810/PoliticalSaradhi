@@ -15,6 +15,26 @@ import {
 import Home from './buttons/home.png';
 
 export default function VoterFormComponent() {
+  const id = localStorage.getItem('id');
+  const resetFormData = () => {
+    setFormData({
+      name: '',
+      fatherName: '',
+      motherName: '',
+      houseNumber: '',
+      colony: '',
+      villageDivision: '',
+      occupation: '',
+      totalVoters: '',
+      availableVoters: '',
+      migratedVoters: '',
+      caste: '',
+      category: '',
+      religion: '',
+      comments: '',
+    });
+  };
+
   const [formData, setFormData] = useState({
     name: '',
     fatherName: '',
@@ -40,9 +60,25 @@ export default function VoterFormComponent() {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
-
-  const handleVoterFormSubmit = () => {
-    console.log('Form Data:', formData);
+  const handleVoterFormSubmit = async () => {
+    console.log('voter submitted form initiated');
+    try {
+      const response = await fetch(`https://canvas-back-end.onrender.com/main/user/form/${id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      console.log(formData);
+      const data = await response.json();
+      console.log('Form submitted successfully:', data);
+      alert('Form submitted successfully:', formData);
+      resetFormData();
+      // Optionally, you can redirect to a different page after successful form submission
+    } catch (error) {
+      console.error('An error occurred during form submission:', error);
+    }
   };
   const navigate = useNavigate();
   return (

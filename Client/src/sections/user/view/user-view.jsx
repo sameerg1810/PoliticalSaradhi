@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -10,9 +10,7 @@ import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-// eslint-disable-next-line import/no-unresolved
-import { users } from 'src/_mock/user';
-
+// Make sure to replace this with the actual fetched data
 // eslint-disable-next-line import/no-unresolved
 import Iconify from 'src/components/iconify';
 // eslint-disable-next-line import/no-unresolved
@@ -25,19 +23,13 @@ import TableEmptyRows from '../table-empty-rows';
 import UserTableToolbar from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
-// ----------------------------------------------------------------------
-
 export default function UserPage() {
+  const [users, setUsers] = useState([]);
   const [page, setPage] = useState(0);
-
   const [order, setOrder] = useState('asc');
-
   const [selected, setSelected] = useState([]);
-
   const [orderBy, setOrderBy] = useState('name');
-
   const [filterName, setFilterName] = useState('');
-
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const handleSort = (event, id) => {
@@ -90,18 +82,31 @@ export default function UserPage() {
   };
 
   const dataFiltered = applyFilter({
-    inputData: users,
+    inputData: users, // Replace this with the actual fetched user data
     comparator: getComparator(order, orderBy),
     filterName,
   });
 
   const notFound = !dataFiltered.length && !!filterName;
+  useEffect(() => {
+    // Fetch the user data from the API
+    const fetchUsers = async () => {
+      const id = localStorage.getItem('id');
+      try {
+        const response = await fetch(`https://canvas-back-end.onrender.com/main/admin/${id}`);
+        const data = await response.json();
+        setUsers(data); // Set the users state with the fetched data
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
 
+    fetchUsers(); // Call the fetchUsers function
+  }, []);
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Kaaryakarthas</Typography>
-
         <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />}>
           New Kaaryakartha
         </Button>
@@ -116,15 +121,15 @@ export default function UserPage() {
 
         <Scrollbar
           sx={{
-            width: '100%', // Adjust the width as needed
-            height: 400, // Adjust the height as needed
+            width: '100%',
+            height: 400,
             '&::-webkit-scrollbar': {
-              width: '12px', // Adjust the width of the scrollbar
-              height: '12px', // Adjust the height of the scrollbar
+              width: '12px',
+              height: '12px',
             },
             '&::-webkit-scrollbar-thumb': {
-              backgroundColor: 'green', // Adjust the color of the scrollbar thumb
-              borderRadius: '10px', // Adjust the border radius of the scrollbar thumb
+              backgroundColor: 'green',
+              borderRadius: '10px',
             },
           }}
         >
@@ -133,44 +138,51 @@ export default function UserPage() {
               <UserTableHead
                 order={order}
                 orderBy={orderBy}
-                rowCount={users.length}
+                rowCount={users.length} // Replace this with the actual user count
                 numSelected={selected.length}
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
                   { id: 'name', label: 'Name' },
                   { id: 'phone', label: 'Phone' },
-                  { id: 'booth', label: 'Booth' },
+                  { id: 'email', label: 'email' },
                   { id: 'isVerified', label: 'Verified', align: 'center' },
                   { id: 'status', label: 'Status' },
-                  { id: 'work', label: 'Work' },
-                  // Add the new column here
+                  { id: 'oid', label: 'oid' },
                 ]}
               />
               <TableBody>
-                {dataFiltered
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => (
-                    <UserTableRow
-                      key={row.id}
-                      name={row.name}
-                      booth={row.booth}
-                      status={row.status}
-                      phone={row.phone}
-                      avatarUrl={row.avatarUrl}
-                      isVerified={row.isVerified}
-                      work={row.work}
-                      // Make sure the key matches the header ID
-                      selected={selected.indexOf(row.name) !== -1}
-                      handleClick={(event) => handleClick(event, row.name)}
-                    />
-                  ))}
+                {Array.isArray(dataFiltered) && dataFiltered.length > 0 ? (
+                  dataFiltered
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row) => (
+                      <UserTableRow
+                        key={row.id}
+                        name={row.name}
+                        email={row.email}
+                        status={row.status}
+                        phone={row.phone}
+                        avatarUrl={row.avatarUrl}
+                        isVerified={row.isVerified}
+                        oid={row.oid}
+                        selected={selected.indexOf(row.name) !== -1}
+                        handleClick={(event) => handleClick(event, row.name)}
+                      />
+                    ))
+                ) : (
+                  <tr>
+                    <td colSpan={5}>No data available</td>
+                  </tr>
+                )}
 
                 <TableEmptyRows
                   height={77}
-                  emptyRows={emptyRows(page, rowsPerPage, users.length)}
+                  emptyRows={
+                    dataFiltered && Array.isArray(dataFiltered)
+                      ? emptyRows(page, rowsPerPage, dataFiltered.length)
+                      : 0
+                  }
                 />
-
                 {notFound && <TableNoData query={filterName} />}
               </TableBody>
             </Table>
@@ -180,7 +192,7 @@ export default function UserPage() {
         <TablePagination
           page={page}
           component="div"
-          count={users.length}
+          count={dataFiltered && Array.isArray(dataFiltered) ? dataFiltered.length : 0}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
           rowsPerPageOptions={[5, 10, 25]}

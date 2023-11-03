@@ -11,7 +11,7 @@ import { visuallyHidden } from './utils';
 
 // ----------------------------------------------------------------------
 
-export default function UserTableHead({
+export default function UserTableRowHead({
   order,
   orderBy,
   rowCount,
@@ -62,11 +62,19 @@ export default function UserTableHead({
   );
 }
 
-UserTableHead.propTypes = {
+UserTableRowHead.propTypes = {
   order: PropTypes.oneOf(['asc', 'desc']),
   orderBy: PropTypes.string,
   rowCount: PropTypes.number,
-  headLabel: PropTypes.array,
+  headLabel: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired, // Adjust the type if necessary
+      label: PropTypes.string.isRequired, // Adjust the type if necessary
+      align: PropTypes.string, // Adjust the type if necessary
+      width: PropTypes.string, // Adjust the type if necessary
+      minWidth: PropTypes.string, // Adjust the type if necessary
+    })
+  ),
   numSelected: PropTypes.number,
   onRequestSort: PropTypes.func,
   onSelectAllClick: PropTypes.func,

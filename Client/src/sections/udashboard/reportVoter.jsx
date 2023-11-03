@@ -14,7 +14,7 @@ export default function Reportvoter() {
     pointOfContact: '',
     numberOfVoters: '',
     contactDetails: '',
-    issue: 'Illegal Movement',
+    issue: '',
   });
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -23,11 +23,30 @@ export default function Reportvoter() {
       [name]: value,
     });
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // You can handle form submission here, for example, by sending the data to a server.
-    console.log('Form submitted with data:', formData);
+    try {
+      const response = await fetch(`https://canvas-back-end.onrender.com/main/user/reports`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Form submitted successfully:', data);
+        alert('report has been submitted successfully', data);
+        // Optionally, you can redirect to a different page after successful form submission
+        navigate('/success'); // Replace '/success' with the desired route
+      } else {
+        console.error('Form submission failed.');
+      }
+    } catch (error) {
+      console.error('An error occurred during form submission:', error);
+    }
   };
+
   return (
     <Box width={300} m="auto" mt={4}>
       <Box display="flex" justifyContent="flex-end" mb={2}>
@@ -45,7 +64,7 @@ export default function Reportvoter() {
           <img src={closeIcon} alt="close" />
         </Button>
       </Box>
-      <h1>Report an Issue</h1>
+      <h1>Report a Voter</h1>
       <form onSubmit={handleSubmit}>
         <Box mt={3}>
           <FormControl fullWidth>

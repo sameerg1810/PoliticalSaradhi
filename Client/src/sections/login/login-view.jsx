@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 
+// eslint-disable-next-line import/no-extraneous-dependencies
+import CircularProgress from '@mui/material/CircularProgress';
+
+// eslint-disable-next-line import/no-extraneous-dependencies
+
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -27,29 +32,29 @@ export default function LoginView() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [userCredentials, setUserCredentials] = useState({ email: '', password: '' });
-
+  const [loading, setLoading] = useState(false);
   const handleLogin = async (event) => {
     event.preventDefault();
     const { email, password } = userCredentials;
     try {
-   
+      setLoading(true); // Set loading state to true on login attempt
 
-      const response = await fetch('https://canvas-back-end.onrender.com/main/admin/login', {
+      const response = await fetch(`https://canvas-back-end.onrender.com/main/admin/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
       });
-      console.log('hello')
-   
+      console.log('hello');
+
       const responseData = await response.json();
-      console.log(responseData)
-   
+      console.log(responseData);
+
       if (responseData.message === 'ok') {
-        const { token, id ,msg} = responseData;
+        const { token, id, msg } = responseData;
         localStorage.setItem('token', token);
-        localStorage.setItem('id',id)
+        localStorage.setItem('id', id);
         const nextPage = msg === 'user' ? '/udashboard' : '/ldashboard';
         router.push(nextPage);
       } else {
@@ -58,6 +63,8 @@ export default function LoginView() {
     } catch (error) {
       console.error('An error occurred:', error);
       alert('An error occurred during login. Please try again.');
+    } finally {
+      setLoading(false); // Set loading state to false once the response is received
     }
   };
 
@@ -98,7 +105,24 @@ export default function LoginView() {
                 OR
               </Typography>
             </Divider>
-
+            {loading && (
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  bottom: 0,
+                  right: 0,
+                  backgroundColor: 'rgba(255, 255, 255, 0.3)',
+                  zIndex: 2, // Change the background color if needed
+                }}
+              >
+                <CircularProgress />
+              </Box>
+            )}
             <form onSubmit={handleLogin}>
               <Stack spacing={3}>
                 <TextField
@@ -109,7 +133,6 @@ export default function LoginView() {
                     setUserCredentials({ ...userCredentials, email: e.target.value })
                   }
                 />
-
                 <TextField
                   name="password"
                   label="Password"

@@ -6,7 +6,7 @@ import { Box, Card, Grid, Popover, Typography, CardContent } from '@mui/material
 import Map from '../overview/Map';
 
 const KaryakarthaInfoPopup = ({ open, handleClose, karyakarthaInfo }) => {
-  const { name, address, currentLocation, kmCanvassed, reportsSent, votersRegistered } =
+  const { name, address, currentLocation, kmCanvassed, reportsSent, votersRegistered, status } =
     karyakarthaInfo;
 
   return (
@@ -67,7 +67,7 @@ const KaryakarthaInfoPopup = ({ open, handleClose, karyakarthaInfo }) => {
                 <Typography align="left">Karyakartha Status:</Typography>
               </Grid>
               <Grid item xs={6}>
-                <Typography align="right"> </Typography>
+                <Typography align="right">{status}</Typography>
               </Grid>
               <Grid item xs={6}>
                 <Typography align="left">No of km canvassed:</Typography>
@@ -110,6 +110,7 @@ KaryakarthaInfoPopup.propTypes = {
     kmCanvassed: PropTypes.number.isRequired,
     reportsSent: PropTypes.number.isRequired,
     votersRegistered: PropTypes.number.isRequired,
+    status: PropTypes.string.isRequired,
   }).isRequired,
 };
 
