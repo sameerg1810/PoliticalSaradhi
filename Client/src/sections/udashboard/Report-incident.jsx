@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Box, Button, TextField, IconButton, Typography, TextareaAutosize } from '@mui/material';
+import { Box, Button, TextField, Typography, TextareaAutosize } from '@mui/material';
 
 import '../styles/Report-incident.css';
-import close from './buttons/Close-button.jpeg';
 
 export default function Reportincident() {
   const navigate = useNavigate();
@@ -21,37 +20,52 @@ export default function Reportincident() {
     console.log('File:', file);
     console.log('Comment:', comment);
   };
-const lan=localStorage.getItem('language')
+  const lan = localStorage.getItem('language');
 
-const language = lan === 'english' 
+  const language = lan === 'english';
 
   return (
     <Box p={2}>
-      <Box display="flex" justifyContent="flex-end">
-        <IconButton
+      <Box display="flex" justifyContent="flex-end" mb={2}>
+        <Button
           className="closebutton"
           onClick={() => {
             navigate('/udashboard');
           }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              navigate('/udashboard');
+            }
+          }}
+          style={{ backgroundColor: 'red' }} // or use color: 'red' for the text color
         >
-          <img src={close} alt="close" />
-        </IconButton>
+          <i className="fa-solid fa-xmark" />
+        </Button>
       </Box>
 
       <Box mt={2}>
         <Typography variant="h5" gutterBottom>
-        {language?" Report Incident":"ఏ ఘటన జరిగినా తెలియజేయండి"} 
+          {language ? ' Report Incident' : 'ఏ ఘటన జరిగినా తెలియజేయండి'}
         </Typography>
       </Box>
 
       <form onSubmit={handleSubmit}>
         <Box mt={2}>
-          <TextField label={language?"Incident":"అది ఏ ఘటన"} variant="outlined" fullWidth required />
+          <TextField
+            label={language ? 'Incident' : 'అది ఏ ఘటన'}
+            variant="outlined"
+            fullWidth
+            required
+          />
         </Box>
 
         <Box mt={2}>
           <TextareaAutosize
-            placeholder={language?"Write your comment here...":"జరిగిన ఘటన గురించి మరియు ఘటన స్థలం గురించి వివరించండి"}
+            placeholder={
+              language
+                ? 'Write your comment here...'
+                : 'జరిగిన ఘటన గురించి మరియు ఘటన స్థలం గురించి వివరించండి'
+            }
             minRows={3}
             style={{
               width: '100%',
@@ -67,14 +81,14 @@ const language = lan === 'english'
 
         <Box mt={2}>
           <Typography variant="body1" gutterBottom>
-          {language?"Attach File":"ఒక చిత్రం లేదా ఫైల్ చేర్చండి"}  
+            {language ? 'Attach File' : 'ఒక చిత్రం లేదా ఫైల్ చేర్చండి'}
           </Typography>
           <input type="file" onChange={handleFileChange} />
         </Box>
 
         <Box mt={2}>
           <Button variant="contained" type="submit">
-            {language?"Submit":"ఫారం పంపండి"}
+            {language ? 'Submit' : 'ఫారం పంపండి'}
           </Button>
         </Box>
       </form>

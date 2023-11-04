@@ -1,4 +1,8 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { toast } from 'react-toastify';
 import React, { useState } from 'react';
+// eslint-disable-next-line import/no-unresolved, import/no-extraneous-dependencies
+import 'react-toastify/dist/ReactToastify.css';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -34,6 +38,8 @@ const SignupView = () => {
     oid: '',
   });
 
+  const lan = localStorage.getItem('language');
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
@@ -57,6 +63,22 @@ const SignupView = () => {
 
       if (response.ok) {
         router.push('/'); // Redirect to the home page after successful registration
+        if (lan !== 'english') {
+          // Show a material-ui popup message for 2 seconds
+          // You can replace 'My message' with the appropriate translation for your language
+          toast.success(
+            'మీరు కత్తదనారులు అయ్యారు, లాగిన్ అవ్వండి. You are a member now, please login.',
+            {
+              position: toast.POSITION.TOP_CENTER,
+              autoClose: 2000,
+            }
+          );
+        } else {
+          toast.success('You are a member now, please login.', {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: 2000,
+          });
+        }
       } else {
         console.error('Sign up failed:', responseData.message);
       }
@@ -96,27 +118,48 @@ const SignupView = () => {
               maxWidth: 420,
             }}
           >
-            <Typography variant="h4">Create an account</Typography>
+            <Typography variant="h4">
+              {lan === 'english' ? 'Create an account' : 'ఖాతా సృష్టించండి'}
+            </Typography>
 
-            <Typography variant="body2" sx={{ mt: 2, mb: 5 }}>
-              Already have an account?
-              <RouterLink to="/" variant="subtitle2" sx={{ ml: 0.5 }}>
-                Login
+            <Typography
+              variant="body2"
+              sx={{ mt: 2, mb: 5, color: 'blue', textShadow: '1px 1px 2px black' }}
+            >
+              {lan === 'english' ? 'Already have an account?' : 'ఖాతా ఉందా..?'}
+              <RouterLink
+                to="/"
+                variant="subtitle2"
+                sx={{
+                  ml: 0.5,
+                  color: 'blue',
+                  textShadow: '1px 1px 2px black',
+                }}
+              >
+                {lan === 'english' ? 'Login' : 'ఇక్కడ లాగిన్ చెయ్యండి'}
               </RouterLink>
             </Typography>
             <Divider sx={{ my: 3 }}>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                OR
+                {lan === 'english' ? 'OR' : 'లేదా'}
               </Typography>
             </Divider>
 
             <form onSubmit={handleSignup}>
               <Stack spacing={3}>
-                <TextField name="name" label="Name" onChange={handleInputChange} />
-                <TextField name="email" label="Email address" onChange={handleInputChange} />
+                <TextField
+                  name="name"
+                  label={lan === 'english' ? 'Name' : 'పేరు'}
+                  onChange={handleInputChange}
+                />
+                <TextField
+                  name="email"
+                  label={lan === 'english' ? 'Email address' : 'ఇమెయిల్'}
+                  onChange={handleInputChange}
+                />
                 <TextField
                   name="password"
-                  label="Password"
+                  label={lan === 'english' ? 'Password' : 'పాస్వర్డ్'}
                   type={showPassword ? 'text' : 'password'}
                   InputProps={{
                     endAdornment: (
@@ -131,11 +174,15 @@ const SignupView = () => {
                 />
                 <TextField
                   name="mobile"
-                  label="Mobile"
+                  label={lan === 'english' ? 'Mobile' : 'ఫోన్ నెంబర్'}
                   inputProps={{ inputMode: 'numeric' }}
                   onChange={handleInputChange}
                 />
-                <TextField name="oid" label="OID" onChange={handleInputChange} />
+                <TextField
+                  name="oid"
+                  label={lan === 'english' ? 'OID' : 'ఐ.డి'}
+                  onChange={handleInputChange}
+                />
               </Stack>
 
               <LoadingButton
@@ -145,7 +192,7 @@ const SignupView = () => {
                 variant="contained"
                 color="inherit"
               >
-                Sign Up
+                {lan === 'english' ? 'Sign Up' : 'వివరాలు పంపండి'}
               </LoadingButton>
             </form>
           </Card>

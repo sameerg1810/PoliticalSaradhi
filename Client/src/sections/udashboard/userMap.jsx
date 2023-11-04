@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { Grid, Switch, FormControlLabel } from '@mui/material';
 
 const UserMapView = () => {
-  const lan=localStorage.getItem("language")
+  const lan = localStorage.getItem('language');
 
   const mapboxAccessToken =
     'pk.eyJ1IjoiYWhtZWRzaGFpazk5OSIsImEiOiJjbG81ZHRvY3UwOXo4MmttdjlzOHptZnk4In0.7pFLKtTFUz8RP6VHmd8EKw'; // Replace with your Mapbox access token
@@ -205,10 +205,34 @@ const UserMapView = () => {
             style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}
           >
             <FormControlLabel
-              control={<Switch onClick={toggleTracking} checked={tracking} color="primary" />}
-              // eslint-disable-next-line no-nested-ternary
-              label={tracking ? (lan === 'english' ? 'Available' : 'అందుబాటులో ఉన్నారు ') : (lan === 'english' ? 'Available' : 'అందుబాటులో ఉన్నారు')}
-              />
+              control={
+                <Switch
+                  onClick={toggleTracking}
+                  checked={tracking}
+                  color="success"
+                  sx={{
+                    '& .MuiSwitch-thumb': {
+                      backgroundColor: tracking ? 'green' : '#bdbdbd',
+                    },
+                    '& .MuiSwitch-track': {
+                      backgroundColor: tracking ? 'lightgreen' : '#bdbdbd',
+                    },
+                    width: '60px',
+                    height: '32px',
+                  }}
+                />
+              }
+              label={
+                // eslint-disable-next-line no-nested-ternary
+                tracking
+                  ? lan === 'english'
+                    ? 'Available'
+                    : 'అందుబాటులో ఉన్నారు'
+                  : lan === 'english'
+                  ? 'Not available'
+                  : 'అందుబాటులో లేరు'
+              }
+            />
           </div>
         </Grid>
       </Grid>

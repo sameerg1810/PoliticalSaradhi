@@ -292,18 +292,17 @@ import {
 
 // eslint-disable-next-line import/no-unresolved
 import Logo from 'src/components/logo'; // Corrected import order
-import Language from './Languages';
 import UserMapView from './userMap';
 import img from './buttons/tel.jpeg';
 import Bell from './buttons/bell.png';
 import Profile from './buttons/Profile.png';
 import NotificationPopup from './Notification';
-// eslint-disable-next-line unused-imports/no-unused-imports
-import Canvassing from './buttons/Canvassing.png';
-// eslint-disable-next-line unused-imports/no-unused-imports
-import Reportvoter from './buttons/report-voter.jpeg';
-// eslint-disable-next-line unused-imports/no-unused-imports
-import Reportincident from './buttons/incident-reporting.jpeg';
+
+// import Canvassing from './buttons/Canvassing.png';
+
+// import Reportvoter from './buttons/report-voter.jpeg';
+
+// import Reportincident from './buttons/incident-reporting.jpeg';
 
 export default function KaryaDashboard() {
   const lan = localStorage.getItem('language');
@@ -412,16 +411,24 @@ export default function KaryaDashboard() {
           </Menu>
         </Toolbar>
       </AppBar>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Box mt={1} p={2} bgcolor="grey.200" border={2} borderColor="success.main" borderRadius={5}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
+        <Box
+          mt={2}
+          p={2}
+          bgcolor="grey.200"
+          border={2}
+          borderColor="success.main"
+          borderRadius={5}
+          boxShadow={3}
+        >
           <UserMapView />
           <Typography variant="body1" color="text.secondary" align="center">
             {lan === 'english'
               ? 'Enable this option to make yourself available and keep you online'
-              : 'మీరు అందుబాటులో ఉండటానికి ఈ ఎంపికను సక్రియం చేయండి మరియు మీరు ఆన్‌లైన్ ఉండటానికి నొక్కండి.'}
+              : 'మీరు అందుబాటులో మరియు ఆన్‌లైన్ ఉండటానికి బటన్ ప్రెస్ చెయ్యండి.'}
           </Typography>
         </Box>
-        <Box mt={1} p={1} bgcolor="grey.200">
+        <Box mt={1} p={1} ms={4} bgcolor="grey.200">
           <Box mt={1}>
             <IconButton
               onClick={handleOpenPopup}
@@ -429,12 +436,10 @@ export default function KaryaDashboard() {
               aria-label="notifications"
               edge="end"
             >
-              <img src={Bell} alt="Bell" />
+              <img src={Bell} alt="Bell" style={{ maxWidth: '40%', height: '20%' }} />
             </IconButton>
           </Box>
-          <Box mt={1} sx={{ minHeight: '30px' }}>
-            <Language />
-          </Box>
+
           <Box mt={1} p={1} bgcolor="grey.200">
             <NotificationPopup open={openPop} handleClosePopup={handleClosePopup} />
           </Box>
@@ -448,15 +453,20 @@ export default function KaryaDashboard() {
               style={{
                 backgroundImage:
                   'url("https://www.shutterstock.com/image-vector/canvass-word-cloud-conceptual-design-260nw-2311243467.jpg")',
-                backgroundSize: 'cover',
+                backgroundSize: '100% 100%',
+                backgroundPosition: 'center',
               }}
               className="btn mt-4 w-80 h-40 rounded-lg bg-blue-700  leading-34 text-center drop-shadow-md buttonScale"
               onClick={() => {
                 navigate('/voterform');
               }}
             >
-              <span className="text-black text-4xl">
-                {language ? 'Start Canvassing' : 'సంఘటన తెలియచేయండి'}
+              <div className="bg-white" style={{ opacity: 0.9 }} />
+              <span
+                className="text-black text-2xl"
+                style={{ textShadow: '0 0 5px white', fontWeight: 'bold' }}
+              >
+                {language ? 'Start Canvassing' : 'ఎన్నికల ప్రచారం ప్రారంభించండి'}
               </span>
             </button>
 
@@ -496,15 +506,13 @@ export default function KaryaDashboard() {
             </button>
 
             {/* call icons */}
-            <button type="button" className="btn home-call-btns">
-              <a href="tel:8977011167" className="text-sm">
-                <i className="fa-solid fa-phone" /> Call incharge-1
-              </a>
-            </button>
-
-            <button type="button" className="btn home-call-btns">
-              <a href="tel:8977011167" className="text-sm">
-                <i className="fa-solid fa-phone" /> Call incharge-2
+            <button
+              type="button"
+              className="btn home-call-btns"
+              style={{ backgroundColor: 'green' }}
+            >
+              <a href="tel:8977011167" className="text-sm" style={{ color: 'white' }}>
+                <i className="fa fa-phone" aria-hidden="true" />
               </a>
             </button>
           </div>
