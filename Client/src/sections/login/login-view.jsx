@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
 
-// eslint-disable-next-line import/no-extraneous-dependencies
-import CircularProgress from '@mui/material/CircularProgress';
-
-// eslint-disable-next-line import/no-extraneous-dependencies
-
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -26,32 +21,32 @@ import Logo from 'src/components/logo';
 // eslint-disable-next-line import/no-unresolved
 import Iconify from 'src/components/iconify';
 
+import ChooseLanguage from '../udashboard/ChooseLanguage';
+
 export default function LoginView() {
+  // eslint-disable-next-line no-unused-vars
+  const lan = localStorage.getItem('language');
   // eslint-disable-next-line no-unused-vars
   const theme = useTheme();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [userCredentials, setUserCredentials] = useState({ email: '', password: '' });
-  const [loading, setLoading] = useState(false);
-  const handleLogin = async (event) => {
-    try {
-      event.preventDefault();
-      setLoading(true); // Set loading state to true on login attempt
 
-      const { email, password } = userCredentials;
-      const response = await fetch(`https://canvas-back-end.onrender.com/main/admin/login`, {
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    const { email, password } = userCredentials;
+    try {
+      const response = await fetch('https://canvas-back-end.onrender.com/main/admin/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
       });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
+      console.log('hello');
 
       const responseData = await response.json();
+      console.log(responseData);
 
       if (responseData.message === 'ok') {
         const { token, id, msg } = responseData;
@@ -60,13 +55,11 @@ export default function LoginView() {
         const nextPage = msg === 'user' ? '/udashboard' : '/ldashboard';
         router.push(nextPage);
       } else {
-        throw new Error('Invalid credentials');
+        alert('Invalid credentials');
       }
     } catch (error) {
-      console.error('An error occurred:', error.message);
+      console.error('An error occurred:', error);
       alert('An error occurred during login. Please try again.');
-    } finally {
-      setLoading(false); // Set loading state to false once the response is received
     }
   };
 
@@ -83,6 +76,10 @@ export default function LoginView() {
       }}
     >
       <Box>
+        {' '}
+        <ChooseLanguage />
+      </Box>
+      <Box>
         <Logo
           sx={{
             position: 'fixed',
@@ -93,51 +90,39 @@ export default function LoginView() {
 
         <Stack alignItems="center" justifyContent="center">
           <Card sx={{ p: 5, width: 1, maxWidth: 420 }}>
-            <Typography variant="h4">Sign in to Political Saradhi</Typography>
+            <Typography variant="h4">
+              {lan === 'english'
+                ? 'Sign in to Political Saradhi'
+                : 'పొలిటికల్ సారధికి సైన్ ఇన్ చేయండి'}
+            </Typography>
 
             <Typography variant="body2" sx={{ mt: 2, mb: 5 }}>
-              Don’t have an account?{' '}
-              <RouterLink to="/signup" variant="subtitle2" sx={{ ml: 0.5 }}>
-                Get started
+              {lan === 'english' ? ' Don’t have an account?' : 'ఖాతా లేదా '}{' '}
+              <RouterLink to="/signup" variant="subtitle2" sx={{ ml: 0.5, ms: 2 }}>
+                {lan === 'english' ? 'Get started' : '   ప్రారంభించండి'}
               </RouterLink>
             </Typography>
 
             <Divider sx={{ my: 3 }}>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                OR
+                {lan === 'english' ? '   OR' : 'లేదా.'}
               </Typography>
             </Divider>
-            {loading && (
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  bottom: 0,
-                  right: 0,
-                  backgroundColor: 'rgba(255, 255, 255, 0.3)',
-                  zIndex: 2, // Change the background color if needed
-                }}
-              >
-                <CircularProgress />
-              </Box>
-            )}
+
             <form onSubmit={handleLogin}>
               <Stack spacing={3}>
                 <TextField
                   name="email"
-                  label="Email address"
+                  label={lan === 'english' ? 'Email address' : 'ఇమెయిల్'}
                   value={userCredentials.email}
                   onChange={(e) =>
                     setUserCredentials({ ...userCredentials, email: e.target.value })
                   }
                 />
+
                 <TextField
                   name="password"
-                  label="Password"
+                  label={lan === 'english' ? 'Email address' : 'పాస్‌వర్డ్.'}
                   type={showPassword ? 'text' : 'password'}
                   value={userCredentials.password}
                   onChange={(e) =>
@@ -157,7 +142,7 @@ export default function LoginView() {
 
               <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ my: 3 }}>
                 <RouterLink to="/forgot-password" variant="subtitle2" underline="hover">
-                  Forgot password?
+                  {lan === 'english' ? '  Forgot Password' : 'పాస్వర్డ్ మర్చిపోయారా?'}
                 </RouterLink>
               </Stack>
 
@@ -168,7 +153,7 @@ export default function LoginView() {
                 variant="contained"
                 color="inherit"
               >
-                Login
+                {lan === 'english' ? '  Login' : 'లాగిన్ చేయండి'}
               </LoadingButton>
             </form>
           </Card>
