@@ -34,11 +34,11 @@ export default function LoginView() {
   const [userCredentials, setUserCredentials] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const handleLogin = async (event) => {
-    event.preventDefault();
-    const { email, password } = userCredentials;
     try {
+      event.preventDefault();
       setLoading(true); // Set loading state to true on login attempt
 
+      const { email, password } = userCredentials;
       const response = await fetch(`https://canvas-back-end.onrender.com/main/admin/login`, {
         method: 'POST',
         headers: {
@@ -46,10 +46,12 @@ export default function LoginView() {
         },
         body: JSON.stringify({ email, password }),
       });
-      console.log('hello');
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
 
       const responseData = await response.json();
-      console.log(responseData);
 
       if (responseData.message === 'ok') {
         const { token, id, msg } = responseData;
@@ -58,10 +60,10 @@ export default function LoginView() {
         const nextPage = msg === 'user' ? '/udashboard' : '/ldashboard';
         router.push(nextPage);
       } else {
-        alert('Invalid credentials');
+        throw new Error('Invalid credentials');
       }
     } catch (error) {
-      console.error('An error occurred:', error);
+      console.error('An error occurred:', error.message);
       alert('An error occurred during login. Please try again.');
     } finally {
       setLoading(false); // Set loading state to false once the response is received
