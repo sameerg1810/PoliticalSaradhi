@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { Box, Button } from '@mui/material';
-
+// updated today 04-11-2023 11:10
 const ChooseLanguage = () => {
   const setLanguage = (language) => {
     localStorage.setItem('language', language);
