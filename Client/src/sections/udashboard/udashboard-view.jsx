@@ -187,7 +187,7 @@
 //                 >
 //                   <img src={Canvassing} alt="Canvassing" />
 //                 </button>
-                
+
 //               </Box>
 //             </Grid>
 //           </Grid>
@@ -256,7 +256,7 @@
 //                 </button>
 
 //               </Box>
-           
+
 //               <div
 //                 className="report-con"
 //                 style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}
@@ -274,13 +274,12 @@
 //       </Card>
 //     </Box>
 //   );
+import { useNavigate } from 'react-router-dom';
 // }
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import {
   Box,
-  Grid,
   Menu,
   Card,
   AppBar,
@@ -291,16 +290,20 @@ import {
   CardContent,
 } from '@mui/material';
 
+// eslint-disable-next-line import/no-unresolved
 import Logo from 'src/components/logo'; // Corrected import order
-import Bell from './buttons/bell.png';
-import NotificationPopup from './Notification';
-import Reportvoter from './buttons/report-voter.jpeg';
-import Reportincident from './buttons/incident-reporting.jpeg';
 import Language from './Languages';
 import UserMapView from './userMap';
+import img from './buttons/tel.jpeg';
+import Bell from './buttons/bell.png';
 import Profile from './buttons/Profile.png';
+import NotificationPopup from './Notification';
+// eslint-disable-next-line unused-imports/no-unused-imports
 import Canvassing from './buttons/Canvassing.png';
-import img from './buttons/tel.jpeg'
+// eslint-disable-next-line unused-imports/no-unused-imports
+import Reportvoter from './buttons/report-voter.jpeg';
+// eslint-disable-next-line unused-imports/no-unused-imports
+import Reportincident from './buttons/incident-reporting.jpeg';
 
 export default function KaryaDashboard() {
   const lan = localStorage.getItem('language');
@@ -439,52 +442,72 @@ export default function KaryaDashboard() {
       </Box>
       <Card variant="outlined" sx={{ mt: 4 }}>
         <CardContent>
-        <div className="flex flex-col home-button-container items-center m-5" >
-        <button
-        style={{backgroundImage:'url("https://www.shutterstock.com/image-vector/canvass-word-cloud-conceptual-design-260nw-2311243467.jpg")'}}
-          className="btn mt-4 w-80 h-40 rounded-lg bg-blue-700  leading-34 text-center drop-shadow-md buttonScale"
-          onClick={() => {
-            navigate("/voterform");
-          }}
-        >
-          <span className="text-black text-4xl "> {language?"Start Canvassing":"సంఘటన తెలియచేయండి"}</span>
+          <div className="flex flex-col home-button-container items-center m-5">
+            <button
+              type="button"
+              style={{
+                backgroundImage:
+                  'url("https://www.shutterstock.com/image-vector/canvass-word-cloud-conceptual-design-260nw-2311243467.jpg")',
+                backgroundSize: 'cover',
+              }}
+              className="btn mt-4 w-80 h-40 rounded-lg bg-blue-700  leading-34 text-center drop-shadow-md buttonScale"
+              onClick={() => {
+                navigate('/voterform');
+              }}
+            >
+              <span className="text-black text-4xl">
+                {language ? 'Start Canvassing' : 'సంఘటన తెలియచేయండి'}
+              </span>
+            </button>
 
-        </button>
+            <button
+              type="button"
+              className="btn mt-4 w-80 h-40 rounded-lg bg-blue-700 leading-34 text-center drop-shadow-md buttonScale"
+              style={{
+                backgroundImage:
+                  'url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZYhwPEJbNPzX0KApQk3B2Y954V_30S0h3wA&usqp=CAU")',
+                backgroundSize: 'cover',
+              }}
+              onClick={() => {
+                navigate('/reportVoter');
+              }}
+            >
+              <span className="text-black text-4xl" style={{ textShadow: '10px 10px 10px white' }}>
+                {language ? 'Report  Voter' : 'ఓటర్ ను రిపోర్ట్ చెయ్యండి'}
+              </span>
+            </button>
 
-        <button
-  className="btn mt-4 w-80 h-40 rounded-lg bg-blue-700 leading-34 text-center drop-shadow-md buttonScale"
-  style={{
-    backgroundImage: 'url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZYhwPEJbNPzX0KApQk3B2Y954V_30S0h3wA&usqp=CAU")',
-  }}
-  onClick={() => {
-    navigate("/reportVoter");
-  }}
->
-  <span className="text-black text-4xl"style={{ textShadow: '10px 10px 10px white' }}>{language?"Report  Voter":"ఓటర్ ను రిపోర్ట్ చెయ్యండి"}</span>
-</button>
-{/* ri button */}
+            <button
+              type="button"
+              className="btn mt-4 w-80 h-40 rounded-lg bg-blue-700 leading-34 text-center drop-shadow-md buttonScale"
+              style={{
+                backgroundImage: language
+                  ? 'url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0MY2uqnyx1tZFd_cu7nEB4Olx1P5XlKaz3g&usqp=CAU")'
+                  : `url(${img})`,
+                backgroundSize: 'cover',
+              }}
+              onClick={() => {
+                navigate('/Report-incident');
+              }}
+            >
+              {/* <span className="text-black text-4xl" style={{ textShadow: '10px 10px 10px white' }}>
+    {language ? "Report  Voter" : "ఓటర్ ను రిపోర్ట్ చెయ్యండి"}
+  </span> */}
+            </button>
 
-<button
-  className="btn mt-4 w-80 h-40 rounded-lg bg-blue-700 leading-34 text-center drop-shadow-md buttonScale"
-  style={{
-    backgroundImage:`${language?'url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0MY2uqnyx1tZFd_cu7nEB4Olx1P5XlKaz3g&usqp=CAU)':`url(${img})`}`,
-    backgroundSize:'cover'
-  }}
-  onClick={() => {
-    navigate("/Report-incident");
-  }}
->
-  {/* <span className="text-black text-4xl"style={{ textShadow: '10px 10px 10px white' }}>{language?"Report  Voter":"ఓటర్ ను రిపోర్ట్ చెయ్యండి"}</span> */}
-</button>
-{/* call icons */}
-        <button className="btn home-call-btns">
-          <a href="tel:8977011167" className="text-sm"><i className="fa-solid fa-phone"></i> Call incharge-1</a>
-        </button>
+            {/* call icons */}
+            <button type="button" className="btn home-call-btns">
+              <a href="tel:8977011167" className="text-sm">
+                <i className="fa-solid fa-phone" /> Call incharge-1
+              </a>
+            </button>
 
-        <button className="btn home-call-btns">
-          <a href="tel:8977011167" className="text-sm"><i className="fa-solid fa-phone"></i> Call incharge-2</a>
-        </button>
-      </div>
+            <button type="button" className="btn home-call-btns">
+              <a href="tel:8977011167" className="text-sm">
+                <i className="fa-solid fa-phone" /> Call incharge-2
+              </a>
+            </button>
+          </div>
         </CardContent>
       </Card>
     </Box>
