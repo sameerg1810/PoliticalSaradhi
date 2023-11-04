@@ -15,6 +15,7 @@ import {
 import Home from './buttons/home.png';
 
 export default function VoterFormComponent() {
+  const lan=localStorage.getItem('language')
   const id = localStorage.getItem('id');
   const resetFormData = () => {
     setFormData({
@@ -100,14 +101,14 @@ export default function VoterFormComponent() {
         </Grid>
       </Box>
       <Box mt={3}>
-        <Typography variant="h4">Canvassing Form</Typography>
+        <Typography variant="h4">{lan==="english"?"Canvassing Form<":"ఎన్నికల ప్రచారం ఫారం"}</Typography>
       </Box>
 
       <Card sx={{ border: '1px solid black', borderRadius: '4px', padding: '16px' }}>
         <CardContent>
-          <Typography variant="h6">Enter Details below</Typography>
+          <Typography variant="h6">{lan==="english"?"Enter Details below":"కింది వివరాలు నమోదు చేయండి"}</Typography>
           <TextField
-            label="Name"
+            label={lan==="english?"?" Name":" పేరు"}
             name="name"
             value={formData.name}
             onChange={handleInputChange}
@@ -116,7 +117,7 @@ export default function VoterFormComponent() {
             margin="normal"
           />
           <TextField
-            label="Father's Name"
+            label={lan==="english?"?"Father's Name":"తండ్రి పేరు"}
             name="fatherName"
             value={formData.fatherName}
             onChange={handleInputChange}
@@ -125,7 +126,7 @@ export default function VoterFormComponent() {
             margin="normal"
           />
           <TextField
-            label="Mother's Name"
+            label={lan==="english"?"Mother's  Name":"తల్లి పేరు"}
             name="motherName"
             value={formData.motherName}
             onChange={handleInputChange}
@@ -134,7 +135,7 @@ export default function VoterFormComponent() {
             margin="normal"
           />
           <TextField
-            label="House Number"
+            label={lan==="english"?"House Number":"ఫ్లాట్  - నెంబరు"}
             name="houseNumber"
             value={formData.houseNumber}
             onChange={handleInputChange}
@@ -143,7 +144,7 @@ export default function VoterFormComponent() {
             margin="normal"
           />
           <TextField
-            label="Colony"
+            label={lan==="english"?"Colony":"కాలనీ"}
             name="colony"
             value={formData.colony}
             onChange={handleInputChange}
@@ -152,7 +153,7 @@ export default function VoterFormComponent() {
             margin="normal"
           />
           <TextField
-            label="Village/Division"
+            label={lan==="english"?"Village/Division":"గ్రామం/నగరం"}
             name="villageDivision"
             value={formData.villageDivision}
             onChange={handleInputChange}
@@ -161,7 +162,7 @@ export default function VoterFormComponent() {
             margin="normal"
           />
           <TextField
-            label="Occupation"
+            label={lan==="english"?"Occupation":"వృత్తి"}
             name="occupation"
             value={formData.occupation}
             onChange={handleInputChange}
@@ -170,7 +171,7 @@ export default function VoterFormComponent() {
             margin="normal"
           />
           <TextField
-            label="Total Number Of Voters"
+            label={lan==="english"?"Total Number Of Voters":"ఓటర్ల మొత్తం సంఖ్య"}
             name="totalVoters"
             value={formData.totalVoters}
             onChange={handleInputChange}
@@ -179,7 +180,7 @@ export default function VoterFormComponent() {
             margin="normal"
           />
           <TextField
-            label="Total Number Of available voters to poll"
+            label={lan==="english"?"Total Number Of available voters to poll":"ఓటు చేయడానికి అందుబాటులో ఉన్న మొత్తం ఓటర్లు"}
             name="availableVoters"
             value={formData.availableVoters}
             onChange={handleInputChange}
@@ -188,7 +189,7 @@ export default function VoterFormComponent() {
             margin="normal"
           />
           <TextField
-            label="Total Number Of migrated Voters"
+            label={lan==="english"?"Total Number Of migrated Voters":"ప్రవాసించిన ఓటర్లు/అందుబాటులో లేని ఓటర్లు"}
             name="migratedVoters"
             value={formData.migratedVoters}
             onChange={handleInputChange}
@@ -197,7 +198,7 @@ export default function VoterFormComponent() {
             margin="normal"
           />
           <TextField
-            label="Caste"
+            label={lan==="english"?"Caste":"కులం"}
             name="caste"
             value={formData.caste}
             onChange={handleInputChange}
@@ -206,7 +207,7 @@ export default function VoterFormComponent() {
             margin="normal"
           />
           <TextField
-            label="Category"
+            label={lan==="english"?"Category":"వర్గం(బీసి-ఏ , బీసి-బి , బీసి-సి,ఎస్టి.....)"}
             name="category"
             value={formData.category}
             onChange={handleInputChange}
@@ -215,7 +216,7 @@ export default function VoterFormComponent() {
             margin="normal"
           />
           <TextField
-            label="Religion"
+            label={lan==="english"?"Religion":"మతం"}
             name="religion"
             value={formData.religion}
             onChange={handleInputChange}
@@ -224,7 +225,7 @@ export default function VoterFormComponent() {
             margin="normal"
           />
           <TextField
-            label="Comments"
+            label={lan==="english"?"Comments":"వ్యాఖ్యలు మరియు సందేశం"}
             name="comments"
             value={formData.comments}
             onChange={handleInputChange}
@@ -233,14 +234,14 @@ export default function VoterFormComponent() {
             margin="normal"
           />
           <Box mt={3}>
-            <input type="file" onChange={(e) => handleUploadFile(e.target.files)} />
+            <input type="file"  onChange={(e) => handleUploadFile(e.target.files)} />
           </Box>
           <Button
             variant="contained"
             onClick={handleVoterFormSubmit}
             sx={{ backgroundColor: '#f9a825', color: 'white', marginTop: '16px' }}
           >
-            Submit
+           {lan==='english'?"Submit":"ఫారం పంపండి"} 
           </Button>
         </CardContent>
       </Card>

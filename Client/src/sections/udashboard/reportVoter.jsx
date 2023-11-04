@@ -8,6 +8,9 @@ import '../styles/Report-incident.css';
 import closeIcon from './buttons/Close-button.jpeg';
 
 export default function Reportvoter() {
+  const lan=localStorage.getItem('language')
+  const language = lan === 'english' 
+
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     houseNumber: '',
@@ -64,12 +67,12 @@ export default function Reportvoter() {
           <img src={closeIcon} alt="close" />
         </Button>
       </Box>
-      <h1>Report a Voter</h1>
+      <h1>{language?"Report a Voter":"ఓటుదారుని రిపోర్ట్ చేయండి"}</h1>
       <form onSubmit={handleSubmit}>
         <Box mt={3}>
           <FormControl fullWidth>
             <TextField
-              label="House Number"
+              label={language?"House Number":"ఇంటి  నంబర్"}
               value={formData.houseNumber}
               onChange={handleInputChange}
             />
@@ -78,7 +81,7 @@ export default function Reportvoter() {
         <Box mt={3}>
           <FormControl fullWidth>
             <TextField
-              label="Point of Contact"
+              label={language?"Point of Contact":"సంప్రదించిన వ్యక్తి"}
               value={formData.pointOfContact}
               onChange={handleInputChange}
             />
@@ -87,7 +90,7 @@ export default function Reportvoter() {
         <Box mt={3}>
           <FormControl fullWidth>
             <TextField
-              label="No of Voters"
+              label={language?"No of Voters":"ఉన్న ఓటర్ల సంఖ్య"}
               type="number"
               value={formData.numberOfVoters}
               onChange={handleInputChange}
@@ -97,7 +100,7 @@ export default function Reportvoter() {
         <Box mt={3}>
           <FormControl fullWidth>
             <TextField
-              label="Contact Details"
+              label={language?"Contact Details":"సంప్రదించిన వ్యక్తి ఫోన్ నంబర్"}
               value={formData.contactDetails}
               onChange={handleInputChange}
             />
@@ -106,7 +109,7 @@ export default function Reportvoter() {
         <Box mt={3}>
           <FormControl fullWidth>
             <TextField
-              label="Comments.."
+              label={language?"Comments..":"వివరణ"}
               value={formData.contactDetails}
               onChange={handleInputChange}
             />
@@ -114,7 +117,7 @@ export default function Reportvoter() {
         </Box>
         <Box mt={3}>
           <FormControl fullWidth>
-            <InputLabel id="issue-label">Select Issue</InputLabel>
+            <InputLabel id="issue-label">{language?"":"సమస్యను ఎంచుకోండి"}</InputLabel>
             <Select
               labelId="issue-label"
               id="issue"
@@ -122,18 +125,18 @@ export default function Reportvoter() {
               label="Select Issue"
               onChange={handleInputChange}
             >
-              <MenuItem value="Illegal Movement">Illegal Movement</MenuItem>
-              <MenuItem value="Removal of Vote">Removal of Vote</MenuItem>
-              <MenuItem value="Change of Address">Change of Address</MenuItem>
-              <MenuItem value="Death">Death</MenuItem>
-              <MenuItem value="Others">Others</MenuItem>
+              <MenuItem value="Illegal Movement">{language?"Illegal Movement":"ఈ ప్రాంతంకి సంబంధించిన వ్యక్తి కాదు/అతడు ఇక్కడ లేరు"}</MenuItem>
+              <MenuItem value="Removal of Vote">{language?"Removal of Vote":"ఓటు తీసి వేయబడింది"}</MenuItem>
+              <MenuItem value="Change of Address">{language?"Change of Address":"వాళ్ళ చిరునామా మారింది"}</MenuItem>
+              <MenuItem value="Death">{language?"Death":"మరణించారు"}</MenuItem>
+              <MenuItem value="Others">{language?"Others":"ఇతర కారణాలు"}</MenuItem>
             </Select>
           </FormControl>
         </Box>
         <Box mt={3}>
           <FormControl fullWidth>
             <Button type="submit" variant="contained" onClick={handleSubmit}>
-              Submit
+             {language?" Submit":"ఫారం పంపండి"}
             </Button>
           </FormControl>
         </Box>

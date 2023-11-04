@@ -5,6 +5,8 @@ import React, { useState, useEffect } from 'react';
 import { Grid, Switch, FormControlLabel } from '@mui/material';
 
 const UserMapView = () => {
+  const lan=localStorage.getItem("language")
+
   const mapboxAccessToken =
     'pk.eyJ1IjoiYWhtZWRzaGFpazk5OSIsImEiOiJjbG81ZHRvY3UwOXo4MmttdjlzOHptZnk4In0.7pFLKtTFUz8RP6VHmd8EKw'; // Replace with your Mapbox access token
 
@@ -204,8 +206,9 @@ const UserMapView = () => {
           >
             <FormControlLabel
               control={<Switch onClick={toggleTracking} checked={tracking} color="primary" />}
-              label={tracking ? 'Available' : 'Not Available'}
-            />
+              // eslint-disable-next-line no-nested-ternary
+              label={tracking ? (lan === 'english' ? 'Available' : 'అందుబాటులో ఉన్నారు ') : (lan === 'english' ? 'Available' : 'అందుబాటులో ఉన్నారు')}
+              />
           </div>
         </Grid>
       </Grid>

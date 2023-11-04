@@ -21,6 +21,9 @@ export default function Reportincident() {
     console.log('File:', file);
     console.log('Comment:', comment);
   };
+const lan=localStorage.getItem('language')
+
+const language = lan === 'english' 
 
   return (
     <Box p={2}>
@@ -37,18 +40,18 @@ export default function Reportincident() {
 
       <Box mt={2}>
         <Typography variant="h5" gutterBottom>
-          Report Incident
+        {language?" Report Incident":"ఏ ఘటన జరిగినా తెలియజేయండి"} 
         </Typography>
       </Box>
 
       <form onSubmit={handleSubmit}>
         <Box mt={2}>
-          <TextField label="Incident" variant="outlined" fullWidth required />
+          <TextField label={language?"Incident":"అది ఏ ఘటన"} variant="outlined" fullWidth required />
         </Box>
 
         <Box mt={2}>
           <TextareaAutosize
-            placeholder="Write your comment here..."
+            placeholder={language?"Write your comment here...":"జరిగిన ఘటన గురించి మరియు ఘటన స్థలం గురించి వివరించండి"}
             minRows={3}
             style={{
               width: '100%',
@@ -64,14 +67,14 @@ export default function Reportincident() {
 
         <Box mt={2}>
           <Typography variant="body1" gutterBottom>
-            Attach File
+          {language?"Attach File":"ఒక చిత్రం లేదా ఫైల్ చేర్చండి"}  
           </Typography>
           <input type="file" onChange={handleFileChange} />
         </Box>
 
         <Box mt={2}>
           <Button variant="contained" type="submit">
-            Submit
+            {language?"Submit":"ఫారం పంపండి"}
           </Button>
         </Box>
       </form>
